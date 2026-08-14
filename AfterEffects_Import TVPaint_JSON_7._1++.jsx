@@ -336,15 +336,15 @@ message_fr["Error::MissingData"] 			= "Données manquantes dans le fichier: ";
 message_fr["Error::MissingLayers"] 			= "Aucun calque trouvé, le projet est vide.";
 message_fr["Error::BadBlendingMode"] 		= "Mode de mélange non supporté";
 message_fr["Error::NoJSONFound"] 			= "Aucun fichier .JSON correspondant trouvé dans le dossier :";
-message_fr["FileBrowser::Info"] 			= "Sélectionner un fichier .JSON";
+message_fr["FileBrowser::Info"] 			= "Sélectionner JSON ou fichier de plan (Multi-sélection)";
 message_fr["FolderBrowser::Info"] 			= "Sélectionner un dossier de plan (Shot) ou un dossier parent";
 message_fr["UI::Title"] 					= "Import TVPaint 12 -- v."+scriptVersion_XX+scriptLastEdit_FR;
 message_fr["UI::Camera::Import"] 			= "Caméra";
 message_fr["UI::Camera::Key"] 				= "Coordonnées des Clés";
 message_fr["UI::Camera::Raw"] 				= "Coordonnées de la Vue Caméra";
 message_fr["UI::Label::Info"] 				= "Importer un projet depuis TVPaint.";
-message_fr["UI::Label::BrowseJSON"] 		= "Parcourir JSON...";
-message_fr["UI::Label::BrowseFolder"] 		= "Parcourir Dossier...";
+message_fr["UI::Label::BrowseJSON"] 		= "Parcourir Plan / JSON...";
+message_fr["UI::Label::BrowseFolder"] 		= "Dossier Batch...";
 message_fr["UI::Label::Settings"] 			= "Options d'Import :";
 message_fr["UI::Label::LayerColors"] 		= "Groupes de Couleur des Calques";
 message_fr["UI::Label::TimeRemap"] 			= "Remappage Temporel";
@@ -367,15 +367,15 @@ message_en["Error::MissingData"] 			= "Data missing from file:";
 message_en["Error::MissingLayers"] 			= "No layers found, project is empty.";
 message_en["Error::BadBlendingMode"] 		= "Blending mode conversion not supported";
 message_en["Error::NoJSONFound"] 			= "No matching .JSON file found in the selected folder:";
-message_en["FileBrowser::Info"] 			= "Select a .JSON file.";
+message_en["FileBrowser::Info"] 			= "Select JSON or any file in shot folder (Multi-select enabled)";
 message_en["FolderBrowser::Info"] 			= "Select a Shot Folder (or Parent Batch Folder)";
 message_en["UI::Title"] 					= "Import TVPaint 12 -- v. "+scriptVersion_XX+scriptLastEdit_LOC;
 message_en["UI::Camera::Import"] 			= "Import Camera";
 message_en["UI::Camera::Key"] 				= "Key Coordinates";
 message_en["UI::Camera::Raw"] 				= "Camera View Coordinates";
 message_en["UI::Label::Info"] 				= "Import and Rebuild a TVPaint Project.";
-message_en["UI::Label::BrowseJSON"] 		= "Browse JSON...";
-message_en["UI::Label::BrowseFolder"] 		= "Browse Folder...";
+message_en["UI::Label::BrowseJSON"] 		= "Browse Shot / JSON...";
+message_en["UI::Label::BrowseFolder"] 		= "Batch Folder...";
 message_en["UI::Label::Settings"] 			= "Import Settings:";
 message_en["UI::Label::LayerColors"] 		= "Layer Color Groups";
 message_en["UI::Label::TimeRemap"] 			= "Time Remap";
@@ -398,15 +398,15 @@ message_ja["Error::MissingData"] 			= "ファイルにデータが見つかり�
 message_ja["Error::MissingLayers"] 			= "レイヤーが見つかりませんでした。プロジェクトは空です。";
 message_ja["Error::BadBlendingMode"] 		= "ブレンディングモードは対応しません";
 message_ja["Error::NoJSONFound"] 			= "選択されたフォルダーに対応する .JSON ファイルが見つかりませんでした:";
-message_ja["FileBrowser::Info"] 			= ".JSON ファイルを選択してください。";
+message_ja["FileBrowser::Info"] 			= "JSON またはショットフォルダ内のファイルを選択 (複数選択可)";
 message_ja["FolderBrowser::Info"] 			= "ショットフォルダーまたはバッチフォルダーを選択してください。";
 message_ja["UI::Title"] 					= "TVPaint 12 -- v. "+scriptVersion_XX+"を読み込みする"+scriptLastEdit_LOC;
 message_ja["UI::Camera::Import"] 			= "カメラ";
 message_ja["UI::Camera::Key"] 				= "キーの座標";
 message_ja["UI::Camera::Raw"] 				= "カメラビュー座標";
 message_ja["UI::Label::Info"] 				= "TVPaint からプロジェクトを読み込む";
-message_ja["UI::Label::BrowseJSON"] 		= "JSON 参照...";
-message_ja["UI::Label::BrowseFolder"] 		= "フォルダー参照...";
+message_ja["UI::Label::BrowseJSON"] 		= "ショット / JSON 参照...";
+message_ja["UI::Label::BrowseFolder"] 		= "バッチフォルダ...";
 message_ja["UI::Label::Settings"] 			= "読み込みオプション:";
 message_ja["UI::Label::LayerColors"] 		= "レイヤーの色";
 message_ja["UI::Label::TimeRemap"] 			= "タイムリーマップ";
@@ -429,15 +429,15 @@ message_zh["Error::MissingData"] 			= "文件数据丢失:";
 message_zh["Error::MissingLayers"] 			= "无法发现图层，项目为空。";
 message_zh["Error::BadBlendingMode"] 		= "不支持混合模式转换";
 message_zh["Error::NoJSONFound"] 			= "在所选文件夹中未找到匹配的 .JSON 文件:";
-message_zh["FileBrowser::Info"] 			= "选择一个 .JSON 文件。";
+message_zh["FileBrowser::Info"] 			= "选择 JSON 或镜头文件夹中的文件（支持多选）";
 message_zh["FolderBrowser::Info"] 			= "选择镜头文件夹（或父批处理文件夹）";
 message_zh["UI::Title"] 					= "导入 TVPaint 12 -- v. "+scriptVersion_XX+scriptLastEdit_LOC;
 message_zh["UI::Camera::Import"] 			= "导入摄影机";
 message_zh["UI::Camera::Key"] 				= "关键坐标";
 message_zh["UI::Camera::Raw"] 				= "相机视图坐标";
 message_zh["UI::Label::Info"] 				= "从 TVPaint 导入项目";
-message_zh["UI::Label::BrowseJSON"] 		= "浏览 JSON...";
-message_zh["UI::Label::BrowseFolder"] 		= "浏览文件夹...";
+message_zh["UI::Label::BrowseJSON"] 		= "浏览镜头 / JSON...";
+message_zh["UI::Label::BrowseFolder"] 		= "批处理文件夹...";
 message_zh["UI::Label::Settings"] 			= "导入设置内容:";
 message_zh["UI::Label::LayerColors"] 		= "图层颜色";
 message_zh["UI::Label::TimeRemap"] 			= "时间重置";
@@ -720,11 +720,60 @@ function FindJSONFilesFromFolder(folder) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
+// Smart Selection to JSON Resolver
+function ResolveSelectedFilesToJSONs(selectedItems) {
+    if (!selectedItems) return [];
+    if (!(selectedItems instanceof Array)) {
+        selectedItems = [selectedItems];
+    }
+    
+    var resolvedJSONs = [];
+    var seenPaths = {};
+    
+    for (var i = 0; i < selectedItems.length; i++) {
+        var item = selectedItems[i];
+        if (!item || !item.exists) continue;
+        
+        if (item instanceof File) {
+            var ext = item.name.split('.').pop().toLowerCase();
+            if (ext === "json") {
+                if (!seenPaths[item.fsName]) {
+                    seenPaths[item.fsName] = true;
+                    resolvedJSONs.push(item);
+                }
+            } else {
+                // If an image or other file was selected inside a shot folder
+                var parentDir = item.parent;
+                if (parentDir && parentDir.exists) {
+                    var shotDirect = File(parentDir.fsName + "/" + parentDir.name + ".json");
+                    if (shotDirect.exists && !seenPaths[shotDirect.fsName]) {
+                        seenPaths[shotDirect.fsName] = true;
+                        resolvedJSONs.push(shotDirect);
+                    } else {
+                        var dirJsons = parentDir.getFiles("*.json");
+                        if (dirJsons && dirJsons.length > 0) {
+                            for (var j = 0; j < dirJsons.length; j++) {
+                                if (dirJsons[j] instanceof File && !seenPaths[dirJsons[j].fsName]) {
+                                    seenPaths[dirJsons[j].fsName] = true;
+                                    resolvedJSONs.push(dirJsons[j]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return resolvedJSONs;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 // GUI Panel
 var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:400});
 var staticTextInfo 				= importPanel.add( "statictext", 	{x:25,  y:10,  width:400, height:25}, 	message[lang]["UI::Label::Info"]			);
-var buttonBrowseJSON 			= importPanel.add( "button", 		{x:25,  y:45,  width:195, height:26}, 	message[lang]["UI::Label::BrowseJSON"]		);
-var buttonBrowseFolder 			= importPanel.add( "button", 		{x:230, y:45,  width:195, height:26}, 	message[lang]["UI::Label::BrowseFolder"]	);
+var buttonBrowseJSON 			= importPanel.add( "button", 		{x:25,  y:45,  width:260, height:26}, 	message[lang]["UI::Label::BrowseJSON"]		);
+var buttonBrowseFolder 			= importPanel.add( "button", 		{x:295, y:45,  width:130, height:26}, 	message[lang]["UI::Label::BrowseFolder"]	);
 var staticTextSettingsTitle 	= importPanel.add( "statictext", 	{x:25,  y:80,  width:200, height:20}, 	message[lang]["UI::Label::Settings"]		);
 var checkboxImportCamera 		= importPanel.add( "checkbox", 		{x:25,  y:115, width:200, height:20}, 	message[lang]["UI::Camera::Import"] 		);
 var radioCameraKeys 			= importPanel.add( "radiobutton", 	{x:250, y:115, width:200, height:20}, 	message[lang]["UI::Camera::Key"] 			);
@@ -829,17 +878,28 @@ buttonBrowseJSON.onClick = function() {
     var lastFolderStr = LoadSetting("LastFolder", "");
     var initialFolder = (lastFolderStr !== "" && Folder(lastFolderStr).exists) ? Folder(lastFolderStr) : Folder.current;
     
-    var dataFile = File.openDialog( message[lang]["FileBrowser::Info"], "JSON Files:*.json", false );
-    if (!dataFile) return;
-    if (!FileExists(dataFile)) return;
+    // Modern Windows Explorer Open Dialog with Date Modified and Multi-Select support!
+    var filterString = "JSON / TVPaint Files:*.json;*.*";
+    var selectedFiles = File.openDialog( message[lang]["FileBrowser::Info"], filterString, true );
+    if (!selectedFiles) return;
     
-    SaveSetting("LastFolder", dataFile.parent.fsName);
+    var resolvedJSONs = ResolveSelectedFilesToJSONs(selectedFiles);
+    if (!resolvedJSONs || resolvedJSONs.length === 0) {
+        var alertPath = (selectedFiles instanceof Array && selectedFiles.length > 0 && selectedFiles[0].parent) ? selectedFiles[0].parent.fsName : "";
+        alert(message[lang]["Error::NoJSONFound"] + endl + alertPath);
+        return;
+    }
+    
+    if (resolvedJSONs[0] && resolvedJSONs[0].parent) {
+        SaveSetting("LastFolder", resolvedJSONs[0].parent.fsName);
+    }
+    
     var settings = GetCurrentSettings();
     
     importPanel.close();
     $.sleep(50);
     
-    ExecuteImport([dataFile], settings);
+    ExecuteImport(resolvedJSONs, settings);
 };
 
 buttonBrowseFolder.onClick = function() {
