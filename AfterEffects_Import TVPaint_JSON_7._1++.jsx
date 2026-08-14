@@ -343,8 +343,7 @@ message_fr["UI::Camera::Import"] 			= "Caméra";
 message_fr["UI::Camera::Key"] 				= "Coordonnées des Clés";
 message_fr["UI::Camera::Raw"] 				= "Coordonnées de la Vue Caméra";
 message_fr["UI::Label::Info"] 				= "Importer un projet depuis TVPaint.";
-message_fr["UI::Label::BrowseJSON"] 		= "Parcourir Plan / JSON...";
-message_fr["UI::Label::BrowseFolder"] 		= "Dossier Batch...";
+message_fr["UI::Label::Browse"] 			= "Parcourir Plan / JSON...";
 message_fr["UI::Label::Settings"] 			= "Options d'Import :";
 message_fr["UI::Label::LayerColors"] 		= "Groupes de Couleur des Calques";
 message_fr["UI::Label::TimeRemap"] 			= "Remappage Temporel";
@@ -374,8 +373,7 @@ message_en["UI::Camera::Import"] 			= "Import Camera";
 message_en["UI::Camera::Key"] 				= "Key Coordinates";
 message_en["UI::Camera::Raw"] 				= "Camera View Coordinates";
 message_en["UI::Label::Info"] 				= "Import and Rebuild a TVPaint Project.";
-message_en["UI::Label::BrowseJSON"] 		= "Browse Shot / JSON...";
-message_en["UI::Label::BrowseFolder"] 		= "Batch Folder...";
+message_en["UI::Label::Browse"] 			= "Browse Shot / JSON...";
 message_en["UI::Label::Settings"] 			= "Import Settings:";
 message_en["UI::Label::LayerColors"] 		= "Layer Color Groups";
 message_en["UI::Label::TimeRemap"] 			= "Time Remap";
@@ -405,8 +403,7 @@ message_ja["UI::Camera::Import"] 			= "カメラ";
 message_ja["UI::Camera::Key"] 				= "キーの座標";
 message_ja["UI::Camera::Raw"] 				= "カメラビュー座標";
 message_ja["UI::Label::Info"] 				= "TVPaint からプロジェクトを読み込む";
-message_ja["UI::Label::BrowseJSON"] 		= "ショット / JSON 参照...";
-message_ja["UI::Label::BrowseFolder"] 		= "バッチフォルダ...";
+message_ja["UI::Label::Browse"] 			= "ショット / JSON 参照...";
 message_ja["UI::Label::Settings"] 			= "読み込みオプション:";
 message_ja["UI::Label::LayerColors"] 		= "レイヤーの色";
 message_ja["UI::Label::TimeRemap"] 			= "タイムリーマップ";
@@ -436,8 +433,7 @@ message_zh["UI::Camera::Import"] 			= "导入摄影机";
 message_zh["UI::Camera::Key"] 				= "关键坐标";
 message_zh["UI::Camera::Raw"] 				= "相机视图坐标";
 message_zh["UI::Label::Info"] 				= "从 TVPaint 导入项目";
-message_zh["UI::Label::BrowseJSON"] 		= "浏览镜头 / JSON...";
-message_zh["UI::Label::BrowseFolder"] 		= "批处理文件夹...";
+message_zh["UI::Label::Browse"] 			= "浏览镜头 / JSON...";
 message_zh["UI::Label::Settings"] 			= "导入设置内容:";
 message_zh["UI::Label::LayerColors"] 		= "图层颜色";
 message_zh["UI::Label::TimeRemap"] 			= "时间重置";
@@ -772,8 +768,7 @@ function ResolveSelectedFilesToJSONs(selectedItems) {
 // GUI Panel
 var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:400});
 var staticTextInfo 				= importPanel.add( "statictext", 	{x:25,  y:10,  width:400, height:25}, 	message[lang]["UI::Label::Info"]			);
-var buttonBrowseJSON 			= importPanel.add( "button", 		{x:25,  y:45,  width:260, height:26}, 	message[lang]["UI::Label::BrowseJSON"]		);
-var buttonBrowseFolder 			= importPanel.add( "button", 		{x:295, y:45,  width:130, height:26}, 	message[lang]["UI::Label::BrowseFolder"]	);
+var buttonBrowse 				= importPanel.add( "button", 		{x:25,  y:45,  width:400, height:26}, 	message[lang]["UI::Label::Browse"]			);
 var staticTextSettingsTitle 	= importPanel.add( "statictext", 	{x:25,  y:80,  width:200, height:20}, 	message[lang]["UI::Label::Settings"]		);
 var checkboxImportCamera 		= importPanel.add( "checkbox", 		{x:25,  y:115, width:200, height:20}, 	message[lang]["UI::Camera::Import"] 		);
 var radioCameraKeys 			= importPanel.add( "radiobutton", 	{x:250, y:115, width:200, height:20}, 	message[lang]["UI::Camera::Key"] 			);
@@ -873,7 +868,7 @@ checkboxPrePostBehaviours.onClick = function() { SaveAllSettings(); };
 dropdownlistSeqImport.onChange = function() { SaveAllSettings(); };
 dropdownlistSeqSorting.onChange = function() { SaveAllSettings(); };
 
-buttonBrowseJSON.onClick = function() {
+buttonBrowse.onClick = function() {
     SaveAllSettings();
     var lastFolderStr = LoadSetting("LastFolder", "");
     var initialFolder = (lastFolderStr !== "" && Folder(lastFolderStr).exists) ? Folder(lastFolderStr) : Folder.current;
@@ -900,30 +895,6 @@ buttonBrowseJSON.onClick = function() {
     $.sleep(50);
     
     ExecuteImport(resolvedJSONs, settings);
-};
-
-buttonBrowseFolder.onClick = function() {
-    SaveAllSettings();
-    var lastFolderStr = LoadSetting("LastFolder", "");
-    var initialFolder = (lastFolderStr !== "" && Folder(lastFolderStr).exists) ? Folder(lastFolderStr) : Folder.current;
-    
-    var selectedFolder = Folder.selectDialog( message[lang]["FolderBrowser::Info"], initialFolder );
-    if (!selectedFolder) return;
-    
-    SaveSetting("LastFolder", selectedFolder.fsName);
-    
-    var foundJsons = FindJSONFilesFromFolder(selectedFolder);
-    if (!foundJsons || foundJsons.length === 0) {
-        alert(message[lang]["Error::NoJSONFound"] + endl + selectedFolder.fsName);
-        return;
-    }
-    
-    var settings = GetCurrentSettings();
-    
-    importPanel.close();
-    $.sleep(50);
-    
-    ExecuteImport(foundJsons, settings);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////
