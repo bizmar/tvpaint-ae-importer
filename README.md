@@ -14,7 +14,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 - **Native Sequence Mode by Default**: Defaults to native image sequences for faster imports and native AE caching.
 - **Smart Preferences Persistence**: Automatically saves and restores your last-used UI settings between After Effects sessions via `app.settings`.
 - **GrainMerge Alert Suppression**: Silently handles TVPaint's `GrainMerge` blending mode to prevent disruptive popup dialogs.
-- **Browse Shot Folder Mode**: Select a shot folder (e.g., `0301`) and the importer automatically detects and loads the corresponding `0301.json` file.
+- **Browse Shot Folder Mode**: Select a shot folder (e.g., `shot_010`) and the importer automatically detects and loads the corresponding `shot_010.json` file.
 - **Batch Folder Support**: Supports selecting a parent directory containing multiple shot subfolders to import them sequentially.
 - **Headless / Automation Ready**: Decoupled core import logic that can be invoked by batch scripts without blocking UI dialogs.
 
@@ -35,7 +35,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 - Click **"Browse JSON..."** to pick a specific `.json` export file.
 
 ### 2. Shot Folder Selection (Auto-Detect)
-- Click **"Browse Folder..."** and select a shot folder (e.g., `.../inAnim/0301/`). The script will automatically locate `0301.json` and import it.
+- Click **"Browse Folder..."** and select a shot folder (e.g., `.../shots/shot_010/`). The script will automatically locate `shot_010.json` and import it.
 - If a parent directory containing multiple shot subfolders is selected, all shots will be imported in sequence.
 
 ---

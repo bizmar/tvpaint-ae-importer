@@ -3,7 +3,7 @@
 // Title: Import TVPaint Animation Clip Structure to After Effects
 //
 // Author: Clément Berthaud for TVPaint Developpement
-// Edits by Matthieu Tragno, Kévin Lobjois, Antigravity & Bizmar
+// Edits by Matthieu Tragno, Kévin Lobjois, Antigravity & Contributors
 // Version: 7.1.1 -- IMPORTANT -- Update the scriptVersion vars when changing the script's version number
 // JSON object, stringify and parse methods from Douglas Crockford (Public Domain)
 // Last Edited on 14/08/2026:
