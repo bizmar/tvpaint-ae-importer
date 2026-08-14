@@ -9,7 +9,6 @@
 // Last Edited on 14/08/2026:
 // -Default Sequence Import Mode set to "Native Sequence"
 // -Implemented settings persistence across AE sessions via app.settings
-// -Suppressed modal alert on "GrainMerge" blending mode (silently defaults to Normal)
 // -Added "Browse Folder..." mode with automatic shot JSON discovery & batch processing
 // -Wrapped imports in AE Undo Groups (app.beginUndoGroup / app.endUndoGroup)
 // -Decoupled core import logic to allow headless/batch execution
@@ -619,8 +618,7 @@ BlendingMatch["Shade2"] 		= BlendingMode.COLOR_BURN;
 BlendingMatch["HardLight"] 		= BlendingMode.VIVID_LIGHT;
 BlendingMatch["SoftLight"] 		= BlendingMode.SOFT_LIGHT;
 //BlendingMatch["GrainExtract"] = Unsupported
-// GrainMerge silently falls back to Normal without alert popup
-BlendingMatch["GrainMerge"] 	= BlendingMode.NORMAL;
+//BlendingMatch["GrainMerge"] 	= Unsupported
 BlendingMatch["Sub2"] 			= BlendingMode.DIFFERENCE;
 BlendingMatch["Darken"] 		= BlendingMode.DARKEN;
 BlendingMatch["Lighten"] 		= BlendingMode.LIGHTEN;
@@ -1240,10 +1238,7 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 			if( blendingModeSupported ) {
 				layer.blendingMode = BlendingMatch[ currentBlendingMode ];
 			} else {
-				// Suppress alert for GrainMerge (default to Normal silently)
-				if( currentBlendingMode.toLowerCase() !== "grainmerge" ) {
-					alert(message[lang]["Error::BadBlendingMode"] + ": " + currentBlendingMode );
-				}
+				alert(message[lang]["Error::BadBlendingMode"] + ": " + currentBlendingMode );
 				layer.blendingMode = BlendingMode.NORMAL;
 			}
 		}
