@@ -4,6 +4,9 @@ An enhanced ExtendScript importer for loading TVPaint Animation projects exporte
 
 Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 through CC 2026+)**.
 
+> [!NOTE]
+> **Disclaimer**: This was 100% vibecoded with Antigravity and is untested.
+
 ---
 
 ## Features & Improvements
@@ -20,7 +23,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 ## Installation
 
 1. Copy `AfterEffects_Import TVPaint_JSON_7._1.jsx` into your After Effects Scripts folder:
-   - **Windows:** `C:\Program Files\Adobe\Adobe After Effects <Version>\Support Files\Scripts\`
+   - **Windows:** `C:\Users\<User>\AppData\Roaming\Adobe\After Effects\<Version>\Scripts\` (or `C:\Program Files\Adobe\Adobe After Effects <Version>\Support Files\Scripts\`)
    - **macOS:** `/Applications/Adobe After Effects <Version>/Scripts/`
 2. Restart After Effects or run the script via **File > Scripts > Run Script File...**
 
