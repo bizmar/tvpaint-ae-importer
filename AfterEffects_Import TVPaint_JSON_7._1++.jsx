@@ -6,11 +6,11 @@
 // Edits by Matthieu Tragno, Kévin Lobjois, Antigravity & Contributors
 // Version: 7.1.1 -- IMPORTANT -- Update the scriptVersion vars when changing the script's version number
 // JSON object, stringify and parse methods from Douglas Crockford (Public Domain)
-// Last Edited on 14/08/2026:
+// Last Edited on 25/08/2026:
 // -Default Sequence Import Mode set to "Native Sequence"
 // -Implemented settings persistence across AE sessions via app.settings
 // -Suppressed modal alert on "GrainMerge" blending mode (silently defaults to Normal)
-// -Added "Browse Folder..." mode with automatic shot JSON discovery & batch processing
+// -Added interactive "Shot Browser" dialog with Date Modified column & multi-shot selection
 // -Wrapped imports in AE Undo Groups (app.beginUndoGroup / app.endUndoGroup)
 // -Decoupled core import logic to allow headless/batch execution
 //
@@ -296,8 +296,8 @@ var scriptVersionPatch 		= 1;
 var scriptVersion_XX 		= scriptVersionMajor + '.' + scriptVersionMinor + '.' + scriptVersionPatch;
 var scriptVersion_vXX 		= 'v' + scriptVersion_XX;
 
-var scriptLastEdit_FR		= " -- 14/08/2026 --";
-var scriptLastEdit_LOC		= " -- 2026/08/14 --";
+var scriptLastEdit_FR		= " -- 25/08/2026 --";
+var scriptLastEdit_LOC		= " -- 2026/08/25 --";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Application versions
@@ -336,15 +336,15 @@ message_fr["Error::MissingFiles"] 			= "Fichiers manquants à l'emplacement spé
 message_fr["Error::MissingData"] 			= "Données manquantes dans le fichier: ";
 message_fr["Error::MissingLayers"] 			= "Aucun calque trouvé, le projet est vide.";
 message_fr["Error::BadBlendingMode"] 		= "Mode de mélange non supporté";
-message_fr["Error::NoJSONFound"] 			= "Aucun fichier .JSON correspondant trouvé dans le dossier :";
-message_fr["FileBrowser::Info"] 			= "Sélectionner JSON ou fichier de plan (Multi-sélection)";
-message_fr["FolderBrowser::Info"] 			= "Sélectionner un dossier de plan (Shot) ou un dossier parent";
+message_fr["Error::NoJSONFound"] 			= "Aucun fichier .JSON valide trouvé dans les dossiers sélectionnés.";
+message_fr["FileBrowser::Info"] 			= "Sélectionner un fichier .JSON";
+message_fr["FolderBrowser::Info"] 			= "Sélectionner le dossier des plans (ex: inAnim)";
 message_fr["UI::Title"] 					= "Import TVPaint 12 -- v."+scriptVersion_XX+scriptLastEdit_FR;
 message_fr["UI::Camera::Import"] 			= "Caméra";
 message_fr["UI::Camera::Key"] 				= "Coordonnées des Clés";
 message_fr["UI::Camera::Raw"] 				= "Coordonnées de la Vue Caméra";
 message_fr["UI::Label::Info"] 				= "Importer un projet depuis TVPaint.";
-message_fr["UI::Label::Browse"] 			= "Parcourir Plan / JSON...";
+message_fr["UI::Label::Browse"] 			= "Sélectionner des Plans (Shot Browser)...";
 message_fr["UI::Label::Settings"] 			= "Options d'Import :";
 message_fr["UI::Label::LayerColors"] 		= "Groupes de Couleur des Calques";
 message_fr["UI::Label::TimeRemap"] 			= "Remappage Temporel";
@@ -356,6 +356,21 @@ message_fr["UI::Label::Sequence::Name"] 	= "Nom (Industrie japonaise)";
 message_fr["UI::Label::Sequence2"] 			= "Mode d'Import Séquence";
 message_fr["UI::Label::Sequence2::Rebuilt"] = "Reconstruit";
 message_fr["UI::Label::Sequence2::Native"] 	= "Natif";
+message_fr["UI::Browser::Title"] 			= "Navigateur de Plans TVPaint (Shot Browser)";
+message_fr["UI::Browser::BaseFolder"] 		= "Dossier source :";
+message_fr["UI::Browser::ChangeFolder"] 	= "Changer dossier...";
+message_fr["UI::Browser::Refresh"] 			= "Actualiser";
+message_fr["UI::Browser::Filter"] 			= "Filtrer :";
+message_fr["UI::Browser::SortName"] 		= "Tri : Nom (A-Z)";
+message_fr["UI::Browser::SortDate"] 		= "Tri : Date (Récents)";
+message_fr["UI::Browser::SelectAll"] 		= "Tout sélectionner";
+message_fr["UI::Browser::DeselectAll"] 		= "Tout désélectionner";
+message_fr["UI::Browser::DirectFile"] 		= "Fichier JSON direct...";
+message_fr["UI::Browser::Cancel"] 			= "Annuler";
+message_fr["UI::Browser::ImportBtn"] 		= "Importer les plans sélectionnés";
+message_fr["UI::Browser::ColShot"] 			= "Dossier du Plan";
+message_fr["UI::Browser::ColDate"] 			= "Date de modification";
+message_fr["UI::Browser::ColStatus"] 		= "Statut JSON";
 
 var message_en = [];
 message_en["Error::Interruption"] 			= "Exit Script.";
@@ -366,15 +381,15 @@ message_en["Error::MissingFiles"] 			= "Files are missing from project location.
 message_en["Error::MissingData"] 			= "Data missing from file:";
 message_en["Error::MissingLayers"] 			= "No layers found, project is empty.";
 message_en["Error::BadBlendingMode"] 		= "Blending mode conversion not supported";
-message_en["Error::NoJSONFound"] 			= "No matching .JSON file found in the selected folder:";
-message_en["FileBrowser::Info"] 			= "Select JSON or any file in shot folder (Multi-select enabled)";
-message_en["FolderBrowser::Info"] 			= "Select a Shot Folder (or Parent Batch Folder)";
+message_en["Error::NoJSONFound"] 			= "No valid .JSON file found in selected folder(s).";
+message_en["FileBrowser::Info"] 			= "Select a .JSON file.";
+message_en["FolderBrowser::Info"] 			= "Select Base Shots Folder (e.g. inAnim)";
 message_en["UI::Title"] 					= "Import TVPaint 12 -- v. "+scriptVersion_XX+scriptLastEdit_LOC;
 message_en["UI::Camera::Import"] 			= "Import Camera";
 message_en["UI::Camera::Key"] 				= "Key Coordinates";
 message_en["UI::Camera::Raw"] 				= "Camera View Coordinates";
 message_en["UI::Label::Info"] 				= "Import and Rebuild a TVPaint Project.";
-message_en["UI::Label::Browse"] 			= "Browse Shot / JSON...";
+message_en["UI::Label::Browse"] 			= "Select Shots (Shot Browser)...";
 message_en["UI::Label::Settings"] 			= "Import Settings:";
 message_en["UI::Label::LayerColors"] 		= "Layer Color Groups";
 message_en["UI::Label::TimeRemap"] 			= "Time Remap";
@@ -386,6 +401,21 @@ message_en["UI::Label::Sequence::Name"] 	= "Name (Japanese Industry)";
 message_en["UI::Label::Sequence2"] 			= "Sequence Import Mode";
 message_en["UI::Label::Sequence2::Rebuilt"] = "Rebuilt";
 message_en["UI::Label::Sequence2::Native"] 	= "Native Sequence";
+message_en["UI::Browser::Title"] 			= "TVPaint Shot Browser";
+message_en["UI::Browser::BaseFolder"] 		= "Base Folder:";
+message_en["UI::Browser::ChangeFolder"] 	= "Change Folder...";
+message_en["UI::Browser::Refresh"] 			= "Refresh";
+message_en["UI::Browser::Filter"] 			= "Filter:";
+message_en["UI::Browser::SortName"] 		= "Sort: Name (A-Z)";
+message_en["UI::Browser::SortDate"] 		= "Sort: Date Modified (Newest)";
+message_en["UI::Browser::SelectAll"] 		= "Select All";
+message_en["UI::Browser::DeselectAll"] 		= "Deselect All";
+message_en["UI::Browser::DirectFile"] 		= "Browse Single JSON...";
+message_en["UI::Browser::Cancel"] 			= "Cancel";
+message_en["UI::Browser::ImportBtn"] 		= "Import Selected Shots";
+message_en["UI::Browser::ColShot"] 			= "Shot Folder";
+message_en["UI::Browser::ColDate"] 			= "Date Modified";
+message_en["UI::Browser::ColStatus"] 		= "JSON Status";
 
 var message_ja = [];
 message_ja["Error::Interruption"] 			= "スクリプトを中止する。";
@@ -397,14 +427,14 @@ message_ja["Error::MissingData"] 			= "ファイルにデータが見つかり�
 message_ja["Error::MissingLayers"] 			= "レイヤーが見つかりませんでした。プロジェクトは空です。";
 message_ja["Error::BadBlendingMode"] 		= "ブレンディングモードは対応しません";
 message_ja["Error::NoJSONFound"] 			= "選択されたフォルダーに対応する .JSON ファイルが見つかりませんでした:";
-message_ja["FileBrowser::Info"] 			= "JSON またはショットフォルダ内のファイルを選択 (複数選択可)";
-message_ja["FolderBrowser::Info"] 			= "ショットフォルダーまたはバッチフォルダーを選択してください。";
+message_ja["FileBrowser::Info"] 			= ".JSON ファイルを選択してください。";
+message_ja["FolderBrowser::Info"] 			= "ショットのルートフォルダーを選択してください (例: inAnim)";
 message_ja["UI::Title"] 					= "TVPaint 12 -- v. "+scriptVersion_XX+"を読み込みする"+scriptLastEdit_LOC;
 message_ja["UI::Camera::Import"] 			= "カメラ";
 message_ja["UI::Camera::Key"] 				= "キーの座標";
 message_ja["UI::Camera::Raw"] 				= "カメラビュー座標";
 message_ja["UI::Label::Info"] 				= "TVPaint からプロジェクトを読み込む";
-message_ja["UI::Label::Browse"] 			= "ショット / JSON 参照...";
+message_ja["UI::Label::Browse"] 			= "ショットを選択 (Shot Browser)...";
 message_ja["UI::Label::Settings"] 			= "読み込みオプション:";
 message_ja["UI::Label::LayerColors"] 		= "レイヤーの色";
 message_ja["UI::Label::TimeRemap"] 			= "タイムリーマップ";
@@ -416,6 +446,21 @@ message_ja["UI::Label::Sequence::Name"] 	= "名前(日本アニメーション�
 message_ja["UI::Label::Sequence2"] 			= "シーケンスの読み込みモード";
 message_ja["UI::Label::Sequence2::Rebuilt"] = "再建されたシーケンス";
 message_ja["UI::Label::Sequence2::Native"] 	= "ネイティブのシーケンス";
+message_ja["UI::Browser::Title"] 			= "TVPaint ショットブラウザ";
+message_ja["UI::Browser::BaseFolder"] 		= "ルートフォルダー:";
+message_ja["UI::Browser::ChangeFolder"] 	= "フォルダー変更...";
+message_ja["UI::Browser::Refresh"] 			= "更新";
+message_ja["UI::Browser::Filter"] 			= "フィルター:";
+message_ja["UI::Browser::SortName"] 		= "並び替え: 名前 (A-Z)";
+message_ja["UI::Browser::SortDate"] 		= "並び替え: 更新日時 (新しい順)";
+message_ja["UI::Browser::SelectAll"] 		= "すべて選択";
+message_ja["UI::Browser::DeselectAll"] 		= "選択解除";
+message_ja["UI::Browser::DirectFile"] 		= "単一JSON参照...";
+message_ja["UI::Browser::Cancel"] 			= "キャンセル";
+message_ja["UI::Browser::ImportBtn"] 		= "選択したショットを読み込む";
+message_ja["UI::Browser::ColShot"] 			= "ショットフォルダー";
+message_ja["UI::Browser::ColDate"] 			= "更新日時";
+message_ja["UI::Browser::ColStatus"] 		= "JSON 状態";
 
 var message_zh = [];
 message_zh["Error::Interruption"] 			= "退出脚本";
@@ -426,15 +471,15 @@ message_zh["Error::MissingFiles"] 			= "项目位置中文件丢失";
 message_zh["Error::MissingData"] 			= "文件数据丢失:";
 message_zh["Error::MissingLayers"] 			= "无法发现图层，项目为空。";
 message_zh["Error::BadBlendingMode"] 		= "不支持混合模式转换";
-message_zh["Error::NoJSONFound"] 			= "在所选文件夹中未找到匹配的 .JSON 文件:";
-message_zh["FileBrowser::Info"] 			= "选择 JSON 或镜头文件夹中的文件（支持多选）";
-message_zh["FolderBrowser::Info"] 			= "选择镜头文件夹（或父批处理文件夹）";
+message_zh["Error::NoJSONFound"] 			= "在所选文件夹中未找到有效的 .JSON 文件。";
+message_zh["FileBrowser::Info"] 			= "选择一个 .JSON 文件。";
+message_zh["FolderBrowser::Info"] 			= "选择镜头根目录（例如 inAnim）";
 message_zh["UI::Title"] 					= "导入 TVPaint 12 -- v. "+scriptVersion_XX+scriptLastEdit_LOC;
 message_zh["UI::Camera::Import"] 			= "导入摄影机";
 message_zh["UI::Camera::Key"] 				= "关键坐标";
 message_zh["UI::Camera::Raw"] 				= "相机视图坐标";
 message_zh["UI::Label::Info"] 				= "从 TVPaint 导入项目";
-message_zh["UI::Label::Browse"] 			= "浏览镜头 / JSON...";
+message_zh["UI::Label::Browse"] 			= "选择镜头 (Shot Browser)...";
 message_zh["UI::Label::Settings"] 			= "导入设置内容:";
 message_zh["UI::Label::LayerColors"] 		= "图层颜色";
 message_zh["UI::Label::TimeRemap"] 			= "时间重置";
@@ -446,6 +491,21 @@ message_zh["UI::Label::Sequence::Name"] 	= "名称（日本动画界）";
 message_zh["UI::Label::Sequence2"] 			= "序列导入模式 ";
 message_zh["UI::Label::Sequence2::Rebuilt"] = "重建序列";
 message_zh["UI::Label::Sequence2::Native"] 	= "天然序列";
+message_zh["UI::Browser::Title"] 			= "TVPaint 镜头浏览器";
+message_zh["UI::Browser::BaseFolder"] 		= "根文件夹:";
+message_zh["UI::Browser::ChangeFolder"] 	= "更改文件夹...";
+message_zh["UI::Browser::Refresh"] 			= "刷新";
+message_zh["UI::Browser::Filter"] 			= "过滤:";
+message_zh["UI::Browser::SortName"] 		= "排序: 名称 (A-Z)";
+message_zh["UI::Browser::SortDate"] 		= "排序: 修改日期 (最新优先)";
+message_zh["UI::Browser::SelectAll"] 		= "全选";
+message_zh["UI::Browser::DeselectAll"] 		= "取消全选";
+message_zh["UI::Browser::DirectFile"] 		= "单个 JSON 文件...";
+message_zh["UI::Browser::Cancel"] 			= "取消";
+message_zh["UI::Browser::ImportBtn"] 		= "导入所选镜头";
+message_zh["UI::Browser::ColShot"] 			= "镜头文件夹";
+message_zh["UI::Browser::ColDate"] 			= "修改日期";
+message_zh["UI::Browser::ColStatus"] 		= "JSON 状态";
 
 // Fill Languages in message Table
 var message = [];
@@ -652,118 +712,278 @@ function LoadIntSetting(key, defaultValue) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// Natural String Sorting Helper
-function NaturalSortCompare(a, b) {
-    var aName = (a instanceof File || a instanceof Folder) ? a.name : String(a);
-    var bName = (b instanceof File || b instanceof Folder) ? b.name : String(b);
-    if (aName === bName) return 0;
-    var aMatch = aName.match(/^(\d+)/);
-    var bMatch = bName.match(/^(\d+)/);
-    if (aMatch && bMatch) {
-        var aNum = parseInt(aMatch[1], 10);
-        var bNum = parseInt(bMatch[1], 10);
-        if (aNum !== bNum) return aNum - bNum;
+// Date Formatter Helper
+function FormatDate(dateObj) {
+    if (!dateObj || !(dateObj instanceof Date) || isNaN(dateObj.getTime())) {
+        return "--";
     }
-    return aName < bName ? -1 : 1;
+    var y = dateObj.getFullYear();
+    var m = dateObj.getMonth() + 1;
+    var d = dateObj.getDate();
+    var hr = dateObj.getHours();
+    var min = dateObj.getMinutes();
+    var sec = dateObj.getSeconds();
+    
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    return y + "-" + pad(m) + "-" + pad(d) + " " + pad(hr) + ":" + pad(min) + ":" + pad(sec);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-// Smart Folder JSON Finder
-function FindJSONFilesFromFolder(folder) {
-    var results = [];
-    if (!folder || !folder.exists) return results;
-
-    // 1. Direct match: [folderName].json inside folder (e.g. 0301/0301.json)
-    var directFile = File(folder.fsName + "/" + folder.name + ".json");
-    if (directFile.exists) {
-        results.push(directFile);
-        return results;
+// Interactive Shot Browser Dialog (ScriptUI Multi-column Table)
+function OpenShotBrowserDialog(initialBaseFolder, settings) {
+    var currentBaseFolder = initialBaseFolder;
+    if (!currentBaseFolder || !currentBaseFolder.exists) {
+        currentBaseFolder = Folder.selectDialog(message[lang]["FolderBrowser::Info"] || "Select Base Shots Folder (e.g. inAnim)");
+        if (!currentBaseFolder) return;
+        SaveSetting("LastFolder", currentBaseFolder.fsName);
     }
 
-    // 2. Any .json files directly in root of folder
-    var rootJsons = folder.getFiles("*.json");
-    if (rootJsons && rootJsons.length > 0) {
-        for (var i = 0; i < rootJsons.length; i++) {
-            if (rootJsons[i] instanceof File) {
-                results.push(rootJsons[i]);
-            }
-        }
-        results.sort(NaturalSortCompare);
-        return results;
-    }
+    var win = new Window("dialog", (message[lang]["UI::Browser::Title"] || "TVPaint Shot Browser") + " -- v." + scriptVersion_XX);
+    win.orientation = "column";
+    win.alignChildren = ["fill", "top"];
+    win.spacing = 8;
+    win.margins = 12;
 
-    // 3. Subfolders (e.g. parent batch directory containing shot subfolders 0301/, 0302/...)
-    var subFolders = folder.getFiles(function(f) { return f instanceof Folder; });
-    if (subFolders && subFolders.length > 0) {
-        subFolders.sort(NaturalSortCompare);
-        for (var s = 0; s < subFolders.length; s++) {
-            var subDir = subFolders[s];
-            var subDirect = File(subDir.fsName + "/" + subDir.name + ".json");
-            if (subDirect.exists) {
-                results.push(subDirect);
-            } else {
-                var subJsons = subDir.getFiles("*.json");
-                if (subJsons && subJsons.length > 0) {
-                    for (var j = 0; j < subJsons.length; j++) {
-                        if (subJsons[j] instanceof File) {
-                            results.push(subJsons[j]);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return results;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////
-// Smart Selection to JSON Resolver
-function ResolveSelectedFilesToJSONs(selectedItems) {
-    if (!selectedItems) return [];
-    if (!(selectedItems instanceof Array)) {
-        selectedItems = [selectedItems];
-    }
+    // --- Top Folder Bar ---
+    var folderGroup = win.add("group");
+    folderGroup.orientation = "row";
+    folderGroup.alignChildren = ["left", "center"];
+    folderGroup.spacing = 6;
     
-    var resolvedJSONs = [];
-    var seenPaths = {};
+    folderGroup.add("statictext", undefined, message[lang]["UI::Browser::BaseFolder"] || "Base Folder:");
+    var txtFolderPath = folderGroup.add("edittext", undefined, currentBaseFolder.fsName);
+    txtFolderPath.characters = 38;
+    txtFolderPath.readonly = true;
     
-    for (var i = 0; i < selectedItems.length; i++) {
-        var item = selectedItems[i];
-        if (!item || !item.exists) continue;
+    var btnChangeFolder = folderGroup.add("button", undefined, message[lang]["UI::Browser::ChangeFolder"] || "Change Folder...");
+    var btnRefresh = folderGroup.add("button", undefined, message[lang]["UI::Browser::Refresh"] || "Refresh");
+
+    // --- Filter & Sort Bar ---
+    var filterSortGroup = win.add("group");
+    filterSortGroup.orientation = "row";
+    filterSortGroup.alignChildren = ["left", "center"];
+    filterSortGroup.spacing = 6;
+    
+    filterSortGroup.add("statictext", undefined, message[lang]["UI::Browser::Filter"] || "Filter:");
+    var editFilter = filterSortGroup.add("edittext", undefined, "");
+    editFilter.characters = 12;
+    
+    var btnSortName = filterSortGroup.add("button", undefined, message[lang]["UI::Browser::SortName"] || "Sort: Name (A-Z)");
+    var btnSortDate = filterSortGroup.add("button", undefined, message[lang]["UI::Browser::SortDate"] || "Sort: Date Modified (Newest)");
+    var btnSelectAll = filterSortGroup.add("button", undefined, message[lang]["UI::Browser::SelectAll"] || "Select All");
+    var btnSelectNone = filterSortGroup.add("button", undefined, message[lang]["UI::Browser::DeselectAll"] || "Deselect All");
+
+    // --- Table Listbox ---
+    var shotListBox = win.add("listbox", undefined, [], {
+        numberOfColumns: 3,
+        showHeaders: true,
+        columnTitles: [
+            message[lang]["UI::Browser::ColShot"] || "Shot Folder",
+            message[lang]["UI::Browser::ColDate"] || "Date Modified",
+            message[lang]["UI::Browser::ColStatus"] || "JSON Status"
+        ],
+        columnWidths: [160, 200, 180],
+        multiselect: true
+    });
+    shotListBox.preferredSize = [570, 340];
+
+    // --- Bottom Status & Actions ---
+    var bottomGroup = win.add("group");
+    bottomGroup.orientation = "row";
+    bottomGroup.alignChildren = ["fill", "center"];
+    bottomGroup.spacing = 8;
+    
+    var txtStatus = bottomGroup.add("statictext", undefined, "Total shots: 0 | Selected: 0");
+    txtStatus.characters = 28;
+    
+    var actionGroup = bottomGroup.add("group");
+    actionGroup.alignment = ["right", "center"];
+    actionGroup.spacing = 8;
+    
+    var btnDirectFile = actionGroup.add("button", undefined, message[lang]["UI::Browser::DirectFile"] || "Browse Single JSON...");
+    var btnCancel = actionGroup.add("button", undefined, message[lang]["UI::Browser::Cancel"] || "Cancel");
+    var btnImport = actionGroup.add("button", undefined, (message[lang]["UI::Browser::ImportBtn"] || "Import Selected") + " (0)");
+    btnImport.preferredSize = [180, 28];
+    btnImport.enabled = false;
+
+    // --- State & Loading Logic ---
+    var currentSort = "name";
+    var allShots = [];
+
+    function ScanFolder() {
+        allShots = [];
+        if (!currentBaseFolder || !currentBaseFolder.exists) return;
         
-        if (item instanceof File) {
-            var ext = item.name.split('.').pop().toLowerCase();
-            if (ext === "json") {
-                if (!seenPaths[item.fsName]) {
-                    seenPaths[item.fsName] = true;
-                    resolvedJSONs.push(item);
-                }
-            } else {
-                // If an image or other file was selected inside a shot folder
-                var parentDir = item.parent;
-                if (parentDir && parentDir.exists) {
-                    var shotDirect = File(parentDir.fsName + "/" + parentDir.name + ".json");
-                    if (shotDirect.exists && !seenPaths[shotDirect.fsName]) {
-                        seenPaths[shotDirect.fsName] = true;
-                        resolvedJSONs.push(shotDirect);
-                    } else {
-                        var dirJsons = parentDir.getFiles("*.json");
-                        if (dirJsons && dirJsons.length > 0) {
-                            for (var j = 0; j < dirJsons.length; j++) {
-                                if (dirJsons[j] instanceof File && !seenPaths[dirJsons[j].fsName]) {
-                                    seenPaths[dirJsons[j].fsName] = true;
-                                    resolvedJSONs.push(dirJsons[j]);
-                                }
-                            }
-                        }
-                    }
+        var subFolders = currentBaseFolder.getFiles(function(f) { return (f instanceof Folder); });
+        if (!subFolders) return;
+        
+        for (var i = 0; i < subFolders.length; i++) {
+            var sub = subFolders[i];
+            var jsonFile = File(sub.fsName + "/" + sub.name + ".json");
+            if (!jsonFile.exists) {
+                var jsonMatches = sub.getFiles("*.json");
+                if (jsonMatches && jsonMatches.length > 0 && (jsonMatches[0] instanceof File)) {
+                    jsonFile = jsonMatches[0];
+                } else {
+                    jsonFile = null;
                 }
             }
+            
+            allShots.push({
+                folder: sub,
+                name: sub.name,
+                date: sub.modified,
+                dateStr: FormatDate(sub.modified),
+                json: jsonFile
+            });
         }
     }
-    
-    return resolvedJSONs;
+
+    function RefreshList() {
+        shotListBox.removeAll();
+        var query = editFilter.text ? editFilter.text.toLowerCase() : "";
+        
+        var filtered = [];
+        for (var i = 0; i < allShots.length; i++) {
+            var item = allShots[i];
+            if (query === "" || item.name.toLowerCase().indexOf(query) !== -1) {
+                filtered.push(item);
+            }
+        }
+        
+        if (currentSort === "name") {
+            filtered.sort(function(a, b) {
+                var aNum = parseInt(a.name.replace(/\D/g, ""), 10);
+                var bNum = parseInt(b.name.replace(/\D/g, ""), 10);
+                if (!isNaN(aNum) && !isNaN(bNum) && aNum !== bNum) {
+                    return aNum - bNum;
+                }
+                return a.name.localeCompare ? a.name.localeCompare(b.name) : (a.name < b.name ? -1 : 1);
+            });
+        } else {
+            filtered.sort(function(a, b) {
+                var aTime = a.date ? a.date.getTime() : 0;
+                var bTime = b.date ? b.date.getTime() : 0;
+                return bTime - aTime;
+            });
+        }
+        
+        for (var j = 0; j < filtered.length; j++) {
+            var d = filtered[j];
+            var row = shotListBox.add("item", d.name);
+            row.subItems[0].text = d.dateStr;
+            row.subItems[1].text = d.json ? ("✓ " + d.json.name) : "✗ Missing JSON";
+            row.shotData = d;
+        }
+        
+        UpdateStatus();
+    }
+
+    function UpdateStatus() {
+        var sel = shotListBox.selection;
+        var count = 0;
+        if (sel) {
+            count = (sel instanceof Array) ? sel.length : 1;
+        }
+        txtStatus.text = "Total: " + shotListBox.items.length + " | Selected: " + count;
+        btnImport.text = (message[lang]["UI::Browser::ImportBtn"] || "Import Selected") + " (" + count + ")";
+        btnImport.enabled = (count > 0);
+    }
+
+    // --- Event Handlers ---
+    btnChangeFolder.onClick = function() {
+        var newFolder = Folder.selectDialog(message[lang]["FolderBrowser::Info"] || "Select base shots folder", currentBaseFolder);
+        if (newFolder) {
+            currentBaseFolder = newFolder;
+            txtFolderPath.text = currentBaseFolder.fsName;
+            SaveSetting("LastFolder", currentBaseFolder.fsName);
+            ScanFolder();
+            RefreshList();
+        }
+    };
+
+    btnRefresh.onClick = function() {
+        ScanFolder();
+        RefreshList();
+    };
+
+    editFilter.onChanging = function() {
+        RefreshList();
+    };
+
+    btnSortName.onClick = function() {
+        currentSort = "name";
+        RefreshList();
+    };
+
+    btnSortDate.onClick = function() {
+        currentSort = "date";
+        RefreshList();
+    };
+
+    btnSelectAll.onClick = function() {
+        var allRows = [];
+        for (var i = 0; i < shotListBox.items.length; i++) {
+            allRows.push(shotListBox.items[i]);
+        }
+        shotListBox.selection = allRows;
+        UpdateStatus();
+    };
+
+    btnSelectNone.onClick = function() {
+        shotListBox.selection = null;
+        UpdateStatus();
+    };
+
+    shotListBox.onChange = function() {
+        UpdateStatus();
+    };
+
+    btnCancel.onClick = function() {
+        win.close();
+    };
+
+    btnDirectFile.onClick = function() {
+        var dataFile = File.openDialog( message[lang]["FileBrowser::Info"], "JSON Files:*.json", false );
+        if (!dataFile) return;
+        if (!FileExists(dataFile)) return;
+        
+        SaveSetting("LastFolder", dataFile.parent.fsName);
+        win.close();
+        importPanel.close();
+        $.sleep(50);
+        ExecuteImport([dataFile], settings);
+    };
+
+    btnImport.onClick = function() {
+        var sel = shotListBox.selection;
+        if (!sel) return;
+        if (!(sel instanceof Array)) sel = [sel];
+        
+        var jsonList = [];
+        for (var k = 0; k < sel.length; k++) {
+            if (sel[k].shotData && sel[k].shotData.json) {
+                jsonList.push(sel[k].shotData.json);
+            }
+        }
+        
+        if (jsonList.length === 0) {
+            alert(message[lang]["Error::NoJSONFound"] + endl + "Selected folder(s)");
+            return;
+        }
+        
+        SaveSetting("LastFolder", currentBaseFolder.fsName);
+        win.close();
+        importPanel.close();
+        $.sleep(50);
+        ExecuteImport(jsonList, settings);
+    };
+
+    // Initial Load & Show
+    ScanFolder();
+    RefreshList();
+    win.center();
+    win.show();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -873,30 +1093,10 @@ dropdownlistSeqSorting.onChange = function() { SaveAllSettings(); };
 buttonBrowse.onClick = function() {
     SaveAllSettings();
     var lastFolderStr = LoadSetting("LastFolder", "");
-    var initialFolder = (lastFolderStr !== "" && Folder(lastFolderStr).exists) ? Folder(lastFolderStr) : Folder.current;
-    
-    // Modern Windows Explorer Open Dialog with Date Modified and Multi-Select support!
-    var filterString = "JSON / TVPaint Files:*.json;*.*";
-    var selectedFiles = File.openDialog( message[lang]["FileBrowser::Info"], filterString, true );
-    if (!selectedFiles) return;
-    
-    var resolvedJSONs = ResolveSelectedFilesToJSONs(selectedFiles);
-    if (!resolvedJSONs || resolvedJSONs.length === 0) {
-        var alertPath = (selectedFiles instanceof Array && selectedFiles.length > 0 && selectedFiles[0].parent) ? selectedFiles[0].parent.fsName : "";
-        alert(message[lang]["Error::NoJSONFound"] + endl + alertPath);
-        return;
-    }
-    
-    if (resolvedJSONs[0] && resolvedJSONs[0].parent) {
-        SaveSetting("LastFolder", resolvedJSONs[0].parent.fsName);
-    }
-    
+    var initialFolder = (lastFolderStr !== "" && Folder(lastFolderStr).exists) ? Folder(lastFolderStr) : null;
     var settings = GetCurrentSettings();
     
-    importPanel.close();
-    $.sleep(50);
-    
-    ExecuteImport(resolvedJSONs, settings);
+    OpenShotBrowserDialog(initialFolder, settings);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1049,8 +1249,8 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 	// Parse JSON Data
 	var dataTree = JSON.parse(dataString);
 
-	// SORT PROJECT DATA, CHECK AND POSSIBLE CONVERSION
-	var compName   		= ReadStringFromData( dataTree, "project.clip.name", dataFileName );
+	// Automatic Comp Naming: <shotName>_comp (e.g. 0650_comp)
+	var compName   		= dataFileName + "_comp";
 	var compWidth  		= ReadIntFromData( dataTree, "project.clip.width", 800 );
 	var compHeight 		= ReadIntFromData( dataTree, "project.clip.height", 600 );
 	var compPixelAspect = ReadFloatFromData( dataTree, "project.clip.pixelaspectratio", 1.0 );
