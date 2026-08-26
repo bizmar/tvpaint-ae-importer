@@ -26,7 +26,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 
 ## Screenshot
 
-![TVPaint Shot Browser](docs/MultiShotSelectExample.png)
+<img src="docs/MultiShotSelectExample.png" width="520" alt="TVPaint Shot Browser" />
 
 ---
 
