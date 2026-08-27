@@ -1274,6 +1274,12 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 
 	app.beginUndoGroup("Import TVPaint JSON - " + dataFileName);
 
+	// Wrapped in try/finally so endUndoGroup() always runs exactly once,
+	// even if something below throws (missing camera data, malformed
+	// link data, etc.) -- otherwise the undo group is left open forever
+	// and corrupts the project's undo stack for the rest of the session.
+	try {
+
 	// BUILD root_composition
 	var rootFolder 			= app.project.items.addFolder( dataFileName );
 	var root_composition 	= app.project.items.addComp(compName,
@@ -1294,7 +1300,6 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 	layersFolder.parentFolder 	= rootFolder;
 	var layersData   			= ReadArrayFromData( dataTree, "project.clip.layers" );
 	if( IsInvalid( layersData, message[lang]["Error::MissingData"] ) ) {
-		app.endUndoGroup();
 		return;
 	}
 
@@ -1350,7 +1355,6 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 		// LINK DATA
 		var link 		= ReadArrayFromData( currentLayerData, "link" );
 		if( IsInvalid( link, message[lang]["Error::MissingData"] ) ) {
-			app.endUndoGroup();
 			return;
 		}
 		var nbEntries 	= link.length;
@@ -1742,7 +1746,9 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 		
 	} // END OF BUILD CAMERA
 
-	app.endUndoGroup();
+	} finally {
+		app.endUndoGroup();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
