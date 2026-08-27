@@ -4,7 +4,7 @@ An enhanced ExtendScript importer for loading TVPaint Animation projects exporte
 
 Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 through CC 2026+)**.
 
-[![Download Script](https://img.shields.io/badge/Download-.JSX%20Script-0055FF?style=for-the-badge&logo=adobeaftereffects&logoColor=white)](https://raw.githubusercontent.com/bizmar/tvpaint-ae-importer/main/AfterEffects_Import%20TVPaint_JSON_7._1%2B%2B.jsx)
+[![Download Script](https://img.shields.io/badge/Download-.JSX%20Script-0055FF?style=for-the-badge&logo=adobeaftereffects&logoColor=white)](https://raw.githubusercontent.com/bizmar/tvpaint-ae-importer/feat/grainmerge-suppression/AfterEffects_Import%20TVPaint_JSON_7._1%2B%2B.jsx)
 
 > [!NOTE]
 > **Disclaimer**: Built and vibecoded with Google Antigravity. It works reliably for our production workflow (native sequences, shot folder batching), but has not been tested beyond that.
@@ -32,7 +32,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 
 ## Installation
 
-1. [📥 Click here to download the `.jsx` script](https://raw.githubusercontent.com/bizmar/tvpaint-ae-importer/main/AfterEffects_Import%20TVPaint_JSON_7._1%2B%2B.jsx) (or right-click -> *Save link as...*).
+1. [📥 Click here to download the `.jsx` script](https://raw.githubusercontent.com/bizmar/tvpaint-ae-importer/feat/grainmerge-suppression/AfterEffects_Import%20TVPaint_JSON_7._1%2B%2B.jsx) (or right-click -> *Save link as...*).
 2. Copy `AfterEffects_Import TVPaint_JSON_7._1++.jsx` into your After Effects Scripts folder:
    - **Windows:** `C:\Users\<User>\AppData\Roaming\Adobe\After Effects\<Version>\Scripts\` (or `C:\Program Files\Adobe\Adobe After Effects <Version>\Support Files\Scripts\`)
    - **macOS:** `/Applications/Adobe After Effects <Version>/Scripts/`
@@ -43,7 +43,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 ## Usage
 
 1. Launch the script and click **"Select Shots (Shot Browser)..."**.
-2. Select your root shots directory (e.g. `inAnim/`). The path will be remembered for future sessions.
+2. Select your root shots directory. The path will be remembered for future sessions.
 3. Select one or multiple shot folders (`Shift+Click` for ranges, `Ctrl+Click` for individual shots).
 4. Click **"Import Selected Shots"** — all selected shots will be loaded and built automatically.
 
