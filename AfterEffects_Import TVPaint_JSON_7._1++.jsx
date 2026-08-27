@@ -338,7 +338,7 @@ message_fr["Error::MissingLayers"] 			= "Aucun calque trouvé, le projet est vid
 message_fr["Error::BadBlendingMode"] 		= "Mode de mélange non supporté";
 message_fr["Error::NoJSONFound"] 			= "Aucun fichier .JSON valide trouvé dans les dossiers sélectionnés.";
 message_fr["FileBrowser::Info"] 			= "Sélectionner un fichier .JSON";
-message_fr["FolderBrowser::Info"] 			= "Sélectionner le dossier des plans (ex: inAnim)";
+message_fr["FolderBrowser::Info"] 			= "Sélectionner le dossier des plans";
 message_fr["UI::Title"] 					= "Import TVPaint 12 -- v."+scriptVersion_XX+scriptLastEdit_FR;
 message_fr["UI::Camera::Import"] 			= "Caméra";
 message_fr["UI::Camera::Key"] 				= "Coordonnées des Clés";
@@ -383,7 +383,7 @@ message_en["Error::MissingLayers"] 			= "No layers found, project is empty.";
 message_en["Error::BadBlendingMode"] 		= "Blending mode conversion not supported";
 message_en["Error::NoJSONFound"] 			= "No valid .JSON file found in selected folder(s).";
 message_en["FileBrowser::Info"] 			= "Select a .JSON file.";
-message_en["FolderBrowser::Info"] 			= "Select Base Shots Folder (e.g. inAnim)";
+message_en["FolderBrowser::Info"] 			= "Select Base Shots Folder";
 message_en["UI::Title"] 					= "Import TVPaint 12 -- v. "+scriptVersion_XX+scriptLastEdit_LOC;
 message_en["UI::Camera::Import"] 			= "Import Camera";
 message_en["UI::Camera::Key"] 				= "Key Coordinates";
@@ -428,7 +428,7 @@ message_ja["Error::MissingLayers"] 			= "レイヤーが見つかりませんで
 message_ja["Error::BadBlendingMode"] 		= "ブレンディングモードは対応しません";
 message_ja["Error::NoJSONFound"] 			= "選択されたフォルダーに対応する .JSON ファイルが見つかりませんでした:";
 message_ja["FileBrowser::Info"] 			= ".JSON ファイルを選択してください。";
-message_ja["FolderBrowser::Info"] 			= "ショットのルートフォルダーを選択してください (例: inAnim)";
+message_ja["FolderBrowser::Info"] 			= "ショットのルートフォルダーを選択してください";
 message_ja["UI::Title"] 					= "TVPaint 12 -- v. "+scriptVersion_XX+"を読み込みする"+scriptLastEdit_LOC;
 message_ja["UI::Camera::Import"] 			= "カメラ";
 message_ja["UI::Camera::Key"] 				= "キーの座標";
@@ -473,7 +473,7 @@ message_zh["Error::MissingLayers"] 			= "无法发现图层，项目为空。";
 message_zh["Error::BadBlendingMode"] 		= "不支持混合模式转换";
 message_zh["Error::NoJSONFound"] 			= "在所选文件夹中未找到有效的 .JSON 文件。";
 message_zh["FileBrowser::Info"] 			= "选择一个 .JSON 文件。";
-message_zh["FolderBrowser::Info"] 			= "选择镜头根目录（例如 inAnim）";
+message_zh["FolderBrowser::Info"] 			= "选择镜头根目录";
 message_zh["UI::Title"] 					= "导入 TVPaint 12 -- v. "+scriptVersion_XX+scriptLastEdit_LOC;
 message_zh["UI::Camera::Import"] 			= "导入摄影机";
 message_zh["UI::Camera::Key"] 				= "关键坐标";
@@ -733,7 +733,7 @@ function FormatDate(dateObj) {
 function OpenShotBrowserDialog(initialBaseFolder, settings) {
     var currentBaseFolder = initialBaseFolder;
     if (!currentBaseFolder || !currentBaseFolder.exists) {
-        currentBaseFolder = Folder.selectDialog(message[lang]["FolderBrowser::Info"] || "Select Base Shots Folder (e.g. inAnim)");
+        currentBaseFolder = Folder.selectDialog(message[lang]["FolderBrowser::Info"] || "Select Base Shots Folder");
         if (!currentBaseFolder) return;
         SaveSetting("LastFolder", currentBaseFolder.fsName);
     }

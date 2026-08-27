@@ -43,7 +43,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 ## Usage
 
 1. Launch the script and click **"Select Shots (Shot Browser)..."**.
-2. Select your root shots directory (e.g. `inAnim/`). The path will be remembered for future sessions.
+2. Select your root shots directory. The path will be remembered for future sessions.
 3. Select one or multiple shot folders (`Shift+Click` for ranges, `Ctrl+Click` for individual shots).
 4. Click **"Import Selected Shots"** — all selected shots will be loaded and built automatically.
 
