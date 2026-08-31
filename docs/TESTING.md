@@ -62,6 +62,9 @@ Three levels, cheapest first:
 | Malformed JSON | **Pass** | Synthetic `C_malformed`: parse error caught per-shot, reported as `Expected: }` |
 | Batch after 3 bad shots | **Pass** | `E_good` imported normally at the end of the run |
 | Failed-import severity | **Pass** | Header alert renders orange-red, failed section framed in a titled panel, Close widened to ~40% |
+| Red label on failed shots | **Pass** | Shot 1420's folder and comp both set to label 1; healthy 1390 left at 2/15 |
+| Deleted frames, real material | **Pass** | 1420 (6 frames) skipped and reported; batch completed in 107 s |
+| Corrupt-but-present PNG | **Not detected** | 1390's `MASK_oce_brada/0080.png` has a broken header; AE imported it without error |
 | macOS | **Untested** | Windows only |
 
 ## Fixed: a missing image file used to abort the whole batch
@@ -112,6 +115,13 @@ Not a missing-file problem — the folder names on disk are corrupted:
 CP437. The material came from macOS (there is a `__MACOSX` entry beside the shots)
 and was unzipped by a tool that did not handle UTF-8. Re-extracting with a
 UTF-8-aware tool fixes the data; no path handling in the script can recover it.
+
+## Not detected: a file that exists but is corrupt
+
+The guard checks that every referenced frame exists, not that it is readable. Shot
+1390 has a PNG with a destroyed header; it passed the guard, and After Effects
+imported it without complaint. Catching this would mean reading file headers before
+import, which is a different and much more expensive check.
 
 ## Other unfixed issues
 

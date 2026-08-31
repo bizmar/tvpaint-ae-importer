@@ -375,7 +375,7 @@ message_fr["UI::Browser::ColStatus"] 		= "Statut JSON";
 message_fr["UI::Report::Title"] 			= "Rapport d'import";
 message_fr["UI::Report::Headline"] 			= "%1 calque(s) dans %2 plan(s) utilisent des modes de fusion qu'After Effects ne peut pas reproduire.";
 message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont été réglés sur Normal -- vérifiez-les avant validation.";
-message_fr["UI::Report::Flagged"] 			= "Etiqueter en Rouge les calques non resolus (encore sur Normal)";
+message_fr["UI::Report::Flagged"] 			= "Etiqueter en Rouge les calques non resolus et les plans echoues";
 message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint -- Signaler les calques concernes";
 message_fr["UI::Report::FilesHeadline"] 	= "%1 calque(s) dans %2 plan(s) ont ete ignores : leurs fichiers images sont introuvables.";
 message_fr["UI::Report::ColMissing"] 		= "Images manquantes";
@@ -453,7 +453,7 @@ message_en["UI::Browser::ColStatus"] 		= "JSON Status";
 message_en["UI::Report::Title"] 			= "Import Report";
 message_en["UI::Report::Headline"] 			= "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce.";
 message_en["UI::Report::Intro"] 			= "The import completed. These layers were set to Normal -- review them before validation.";
-message_en["UI::Report::Flagged"] 			= "Label unresolved layers Red (still set to Normal)";
+message_en["UI::Report::Flagged"] 			= "Label unresolved layers and failed shots Red";
 message_en["UI::Report::FlagUndo"] 			= "TVPaint Import -- Flag Affected Layers";
 message_en["UI::Report::FilesHeadline"] 	= "%1 layer(s) in %2 shot(s) were skipped: their image files were not found.";
 message_en["UI::Report::ColMissing"] 		= "Missing frames";
@@ -531,7 +531,7 @@ message_ja["UI::Browser::ColStatus"] 		= "JSON 状態";
 message_ja["UI::Report::Title"] 			= "読み込みレポート";
 message_ja["UI::Report::Headline"] 			= "%2 個のショット内の %1 個のレイヤーで、After Effects では再現できない描画モードが使用されています。";
 message_ja["UI::Report::Intro"] 			= "読み込みは完了しました。これらのレイヤーは「通常」に設定されていますので、確認してください。";
-message_ja["UI::Report::Flagged"] 			= "未解決のレイヤー (通常のまま) に赤のラベルを付ける";
+message_ja["UI::Report::Flagged"] 			= "未解決のレイヤーと失敗したショットに赤のラベルを付ける";
 message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み -- 対象レイヤーにラベルを付ける";
 message_ja["UI::Report::FilesHeadline"] 	= "%2 個のショット内の %1 個のレイヤーをスキップしました: 画像ファイルが見つかりません。";
 message_ja["UI::Report::ColMissing"] 		= "見つからないファイル";
@@ -609,7 +609,7 @@ message_zh["UI::Browser::ColStatus"] 		= "JSON 状态";
 message_zh["UI::Report::Title"] 			= "导入报告";
 message_zh["UI::Report::Headline"] 			= "%2 个镜头中的 %1 个图层使用了 After Effects 无法还原的混合模式。";
 message_zh["UI::Report::Intro"] 			= "导入已完成。这些图层已设置为“正常”，请在交付前检查。";
-message_zh["UI::Report::Flagged"] 			= "将未解决的图层 (仍为正常) 标为红色";
+message_zh["UI::Report::Flagged"] 			= "将未解决的图层和失败的镜头标为红色";
 message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入 -- 标记受影响的图层";
 message_zh["UI::Report::FilesHeadline"] 	= "已跳过 %2 个镜头中的 %1 个图层: 未找到其图像文件。";
 message_zh["UI::Report::ColMissing"] 		= "缺失的帧";
@@ -877,14 +877,21 @@ function ResetImportWarnings() {
 // the blending warnings: nothing was converted, the layer simply is not there.
 var importFileFailures = [];
 
-function AddFileFailure( iShot, iComp, iLayer, iMissingCount, iTotalCount, iFirstMissing ) {
+function AddFileFailure( iShot, iComp, iLayer, iMissingCount, iTotalCount, iFirstMissing,
+                         iCompRef, iFolderRef ) {
     importFileFailures.push({
         shot:    iShot,
         comp:    iComp,
         layer:   iLayer,
         missing: iMissingCount,
         total:   iTotalCount,
-        first:   iFirstMissing
+        first:   iFirstMissing,
+        // The layer itself was never created, so the report marks the containers
+        // instead: the shot's composition and its project folder.
+        compRef:        iCompRef,
+        folderRef:      iFolderRef,
+        compLabel:      ( iCompRef   ? iCompRef.label   : undefined ),
+        folderLabel:    ( iFolderRef ? iFolderRef.label : undefined )
     });
 }
 
@@ -1669,7 +1676,9 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 							ReadStringFromData( currentLayerData, "name", "Undefined" ),
 							missingCount,
 							filesArray.length,
-							firstMissing );
+							firstMissing,
+							root_composition,
+							rootFolder );
 			continue;
 		}
 
@@ -2112,6 +2121,22 @@ function ShowWarningReport( iSettings ) {
                     }
                 } catch(eLabel) {}
             }
+
+            // A failed shot has no layer to mark, so its composition and project
+            // folder are marked instead -- those are what has to be re-imported.
+            for( var fi = 0; fi < importFileFailures.length; fi++ ) {
+                var fRec2 = importFileFailures[fi];
+                try {
+                    if( fRec2.compRef ) {
+                        fRec2.compRef.label = iOn ? 1
+                                            : ( fRec2.compLabel !== undefined ? fRec2.compLabel : 0 );
+                    }
+                    if( fRec2.folderRef ) {
+                        fRec2.folderRef.label = iOn ? 1
+                                              : ( fRec2.folderLabel !== undefined ? fRec2.folderLabel : 0 );
+                    }
+                } catch(eItem) {}
+            }
         } finally {
             app.endUndoGroup();
         }
@@ -2202,9 +2227,10 @@ function ShowWarningReport( iSettings ) {
                         Msg("UI::Report::ColApplied", "Applied in AE") ],
         columnWidths: [ 90, 150, 160, 140, 110 ]
     });
-    detailList.preferredSize = [660, RowsToPixels( importWarnings.length, 6, 18, true )];
+    detailList.preferredSize = [660, RowsToPixels( importWarnings.length, 5, 12, true )];
     detailList.minimumSize = [400, RowsToPixels( 4, 4, 4, true )];
-    detailList.alignment = ["fill", "fill"];	// takes the slack when the window grows
+    detailList.maximumSize = [4000, 3000];	// or ScriptUI caps growth at the preferred height
+    detailList.alignment = ["fill", "fill"];
 
     // Rebuilt from the warning records rather than by poking individual cells, so the
     // table cannot drift out of step with the data after a mode is reassigned.
@@ -2320,20 +2346,6 @@ function ShowWarningReport( iSettings ) {
         }
     };
 
-    // Sits under the mode picker because it belongs to the same job: whatever is left
-    // unfixed can be marked for later. Off by default -- the label it overwrites
-    // carries the TVPaint group colour.
-    var flagGroup = win.add("group");
-    flagGroup.orientation = "row";
-    flagGroup.alignChildren = ["left", "center"];
-    var chkFlag = flagGroup.add("checkbox", undefined,
-        Msg("UI::Report::Flagged", "Label unresolved layers Red (still set to Normal)"));
-    chkFlag.value = LoadBoolSetting("FlagWarnings", false);
-    chkFlag.onClick = function() {
-        SaveSetting("FlagWarnings", chkFlag.value);
-        ApplyRedFlags( chkFlag.value );
-    };
-
     // --- Failed imports: separate, and framed, because these layers are simply absent ---
     if( importFileFailures.length > 0 ) {
         var failPanel = win.add("panel", undefined,
@@ -2343,6 +2355,7 @@ function ShowWarningReport( iSettings ) {
         failPanel.margins = 10;
         failPanel.spacing = 6;
         failPanel.alignment = ["fill", "fill"];
+        failPanel.maximumSize = [4000, 3000];
 
         var txtFiles = failPanel.add("statictext", undefined,
             FormatMessage( Msg("UI::Report::FilesHeadline",
@@ -2360,8 +2373,9 @@ function ShowWarningReport( iSettings ) {
                             Msg("UI::Report::ColMissing", "Missing frames") ],
             columnWidths: [ 90, 150, 190, 200 ]
         });
-        failList.preferredSize = [630, RowsToPixels( importFileFailures.length, 3, 10, true )];
-        failList.minimumSize = [400, RowsToPixels( 2, 2, 2, true )];
+        failList.preferredSize = [630, RowsToPixels( importFileFailures.length, 6, 16, true )];
+        failList.minimumSize = [400, RowsToPixels( 4, 4, 4, true )];
+        failList.maximumSize = [4000, 3000];
         failList.alignment = ["fill", "fill"];
         for( var ff = 0; ff < importFileFailures.length; ff++ ) {
             var fRec = importFileFailures[ff];
@@ -2373,6 +2387,21 @@ function ShowWarningReport( iSettings ) {
                                   : fRec.first;
         }
     }
+
+    // Last control before the buttons, because it acts on everything above it:
+    // unresolved layers get a red label, and a failed shot's composition and folder
+    // are marked too. Off by default -- the label it overwrites carries the TVPaint
+    // group colour.
+    var flagGroup = win.add("group");
+    flagGroup.orientation = "row";
+    flagGroup.alignChildren = ["left", "center"];
+    var chkFlag = flagGroup.add("checkbox", undefined,
+        Msg("UI::Report::Flagged", "Label unresolved layers Red (still set to Normal)"));
+    chkFlag.value = LoadBoolSetting("FlagWarnings", false);
+    chkFlag.onClick = function() {
+        SaveSetting("FlagWarnings", chkFlag.value);
+        ApplyRedFlags( chkFlag.value );
+    };
 
     // --- Actions ---
     var actionGroup = win.add("group");
