@@ -819,7 +819,9 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
         
         for (var i = 0; i < subFolders.length; i++) {
             var sub = subFolders[i];
-            var jsonFile = File(sub.fsName + "/" + sub.name + ".json");
+            // Folder.name is URI-encoded (spaces become %20); decode for display and path building.
+            var subName = File.decode(sub.name);
+            var jsonFile = File(sub.fsName + "/" + subName + ".json");
             if (!jsonFile.exists) {
                 var jsonMatches = sub.getFiles("*.json");
                 if (jsonMatches && jsonMatches.length > 0 && (jsonMatches[0] instanceof File)) {
@@ -831,7 +833,7 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
             
             allShots.push({
                 folder: sub,
-                name: sub.name,
+                name: subName,
                 date: sub.modified,
                 dateStr: FormatDate(sub.modified),
                 json: jsonFile
@@ -872,7 +874,7 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
             var d = filtered[j];
             var row = shotListBox.add("item", d.name);
             row.subItems[0].text = d.dateStr;
-            row.subItems[1].text = d.json ? ("✓ " + d.json.name) : "✗ Missing JSON";
+            row.subItems[1].text = d.json ? ("✓ " + File.decode(d.json.name)) : "✗ Missing JSON";
             row.shotData = d;
         }
         
