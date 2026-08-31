@@ -36,12 +36,6 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 
 ---
 
-## Screenshot
-
-<img src="docs/MultiShotSelectExample.png" width="520" alt="TVPaint Shot Browser" />
-
----
-
 ## Installation
 
 1. [📥 Click here to download the `.jsx` script](https://raw.githubusercontent.com/bizmar/tvpaint-ae-importer/main/AfterEffects_Import%20TVPaint_JSON_7._1%2B%2B.jsx) — **right-click the link -> *Save link as...*** to save it directly, otherwise the browser will just display the code.
@@ -66,28 +60,15 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 
 ---
 
-## Import Report
+## Screenshots
+
+**Shot Browser** — pick one or many shots to import.
+
+<img src="docs/MultiShotSelectExample.png" width="620" alt="TVPaint Shot Browser" />
+
+**Import Report** — shown once when the run finishes.
 
 <img src="docs/ImportReportExample.png" width="620" alt="Import Report" />
-
-Unsupported blending modes used to raise one modal alert per layer, which made a
-large batch impossible to leave unattended. They are now collected and presented
-once, when the run finishes.
-
-A real 33-shot import produced:
-
-```
-!  8 layer(s) in 5 shot(s) did NOT import. Those shots will need re-importing.
-  1340  Clip_1340  COL_sal_spodaj  28/28
-  1360  Clip_1360  COL_oce_srajca  2/3
-  ...
-
-42 layer(s) across 29 shot(s) use blending modes that After Effects cannot reproduce.
-  GrainMerge -> Normal   41
-  Light -> Normal   1
-```
-
-The window is resizable, so it stays usable at 100 shots.
 
 > [!NOTE]
 > A file that is *present but corrupt* is not detected: the check confirms every
