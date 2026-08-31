@@ -2204,6 +2204,62 @@ function ShowWarningReport( iSettings ) {
 
 
     // --- Summary grouped by blending mode ---
+    // --- Failed imports, first: these shots have to be re-imported, and that has to
+    //     happen before any of the blending fixes below are worth making ---
+    if( importFileFailures.length > 0 ) {
+        var failPanel = win.add("panel", undefined,
+            Msg("UI::Report::FilesTitle", "FAILED IMPORTS -- these layers are not in the project"));
+        failPanel.orientation = "column";
+        failPanel.alignChildren = ["fill", "top"];
+        failPanel.margins = 10;
+        failPanel.spacing = 6;
+        failPanel.alignment = ["fill", "fill"];
+        failPanel.maximumSize = [4000, 3000];
+
+        var txtFiles = failPanel.add("statictext", undefined,
+            FormatMessage( Msg("UI::Report::FilesHeadline",
+                               "%1 layer(s) in %2 shot(s) were skipped: their image files were not found."),
+                           [ importFileFailures.length, failShots.length ] ),
+            {multiline: true});
+        txtFiles.preferredSize = [630, 16];
+
+        var failList = failPanel.add("listbox", undefined, [], {
+            numberOfColumns: 4,
+            showHeaders: true,
+            columnTitles: [ Msg("UI::Report::ColShot",    "Shot"),
+                            Msg("UI::Report::ColComp",    "Composition"),
+                            Msg("UI::Report::ColLayer",   "Layer"),
+                            Msg("UI::Report::ColMissing", "Missing frames") ],
+            columnWidths: [ 90, 150, 190, 200 ]
+        });
+        failList.preferredSize = [630, RowsToPixels( importFileFailures.length, 6, 16, true )];
+        failList.minimumSize = [400, RowsToPixels( 4, 4, 4, true )];
+        failList.maximumSize = [4000, 3000];
+        failList.alignment = ["fill", "fill"];
+        for( var ff = 0; ff < importFileFailures.length; ff++ ) {
+            var fRec = importFileFailures[ff];
+            var fRow = failList.add("item", fRec.shot);
+            fRow.subItems[0].text = fRec.comp;
+            fRow.subItems[1].text = fRec.layer;
+            fRow.subItems[2].text = ( fRec.total > 0 )
+                                  ? ( fRec.missing + " / " + fRec.total + "   " + fRec.first )
+                                  : fRec.first;
+        }
+
+        // On by default: a shot that did not import has to be found again later, and
+        // unlike a layer label there is no TVPaint colour being overwritten here.
+        var chkFlagFailures = failPanel.add("checkbox", undefined,
+            Msg("UI::Report::FlaggedFiles", "Label these shots' compositions and folders Red"));
+        chkFlagFailures.value = LoadBoolSetting("FlagFailures", true);
+        chkFlagFailures.onClick = function() {
+            SaveSetting("FlagFailures", chkFlagFailures.value);
+            ApplyFailureFlags( chkFlagFailures.value );
+        };
+        if( chkFlagFailures.value ) {
+            ApplyFailureFlags( true );
+        }
+    }
+
     win.add("statictext", undefined, Msg("UI::Report::GroupTitle", "Summary by blending mode:"));
     var summaryList = win.add("listbox", undefined, []);
     summaryList.preferredSize = [660, RowsToPixels( groups.length, 1, 6, false )];
@@ -2367,61 +2423,6 @@ function ShowWarningReport( iSettings ) {
         SaveSetting("FlagWarnings", chkFlagLayers.value);
         ApplyLayerFlags( chkFlagLayers.value );
     };
-
-    // --- Failed imports: separate, and framed, because these layers are simply absent ---
-    if( importFileFailures.length > 0 ) {
-        var failPanel = win.add("panel", undefined,
-            Msg("UI::Report::FilesTitle", "FAILED IMPORTS -- these layers are not in the project"));
-        failPanel.orientation = "column";
-        failPanel.alignChildren = ["fill", "top"];
-        failPanel.margins = 10;
-        failPanel.spacing = 6;
-        failPanel.alignment = ["fill", "fill"];
-        failPanel.maximumSize = [4000, 3000];
-
-        var txtFiles = failPanel.add("statictext", undefined,
-            FormatMessage( Msg("UI::Report::FilesHeadline",
-                               "%1 layer(s) in %2 shot(s) were skipped: their image files were not found."),
-                           [ importFileFailures.length, failShots.length ] ),
-            {multiline: true});
-        txtFiles.preferredSize = [630, 16];
-
-        var failList = failPanel.add("listbox", undefined, [], {
-            numberOfColumns: 4,
-            showHeaders: true,
-            columnTitles: [ Msg("UI::Report::ColShot",    "Shot"),
-                            Msg("UI::Report::ColComp",    "Composition"),
-                            Msg("UI::Report::ColLayer",   "Layer"),
-                            Msg("UI::Report::ColMissing", "Missing frames") ],
-            columnWidths: [ 90, 150, 190, 200 ]
-        });
-        failList.preferredSize = [630, RowsToPixels( importFileFailures.length, 6, 16, true )];
-        failList.minimumSize = [400, RowsToPixels( 4, 4, 4, true )];
-        failList.maximumSize = [4000, 3000];
-        failList.alignment = ["fill", "fill"];
-        for( var ff = 0; ff < importFileFailures.length; ff++ ) {
-            var fRec = importFileFailures[ff];
-            var fRow = failList.add("item", fRec.shot);
-            fRow.subItems[0].text = fRec.comp;
-            fRow.subItems[1].text = fRec.layer;
-            fRow.subItems[2].text = ( fRec.total > 0 )
-                                  ? ( fRec.missing + " / " + fRec.total + "   " + fRec.first )
-                                  : fRec.first;
-        }
-
-        // On by default: a shot that did not import has to be found again later, and
-        // unlike a layer label there is no TVPaint colour being overwritten here.
-        var chkFlagFailures = failPanel.add("checkbox", undefined,
-            Msg("UI::Report::FlaggedFiles", "Label these shots' compositions and folders Red"));
-        chkFlagFailures.value = LoadBoolSetting("FlagFailures", true);
-        chkFlagFailures.onClick = function() {
-            SaveSetting("FlagFailures", chkFlagFailures.value);
-            ApplyFailureFlags( chkFlagFailures.value );
-        };
-        if( chkFlagFailures.value ) {
-            ApplyFailureFlags( true );
-        }
-    }
 
     // --- Actions ---
     var actionGroup = win.add("group");
