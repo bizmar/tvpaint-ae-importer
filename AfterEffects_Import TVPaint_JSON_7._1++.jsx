@@ -371,6 +371,29 @@ message_fr["UI::Browser::ImportBtn"] 		= "Importer les plans sélectionnés";
 message_fr["UI::Browser::ColShot"] 			= "Dossier du Plan";
 message_fr["UI::Browser::ColDate"] 			= "Date de modification";
 message_fr["UI::Browser::ColStatus"] 		= "Statut JSON";
+// --- Import Warning Report ---
+message_fr["UI::Report::Title"] 			= "Rapport d'import";
+message_fr["UI::Report::Headline"] 			= "%1 calque(s) dans %2 plan(s) utilisent des modes de fusion qu'After Effects ne peut pas reproduire.";
+message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont été réglés sur Normal -- vérifiez-les avant validation.";
+message_fr["UI::Report::Flagged"] 			= "Ces calques ont reçu une étiquette Rouge dans leurs compositions.";
+message_fr["UI::Report::GroupTitle"] 		= "Récapitulatif par mode de fusion :";
+message_fr["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 calque(s) dans %4 plan(s)";
+message_fr["UI::Report::ColShot"] 			= "Plan";
+message_fr["UI::Report::ColComp"] 			= "Composition";
+message_fr["UI::Report::ColLayer"] 			= "Calque";
+message_fr["UI::Report::ColMode"] 			= "Mode TVPaint";
+message_fr["UI::Report::ColApplied"] 		= "Appliqué dans AE";
+message_fr["UI::Report::Details"] 			= "Calques concernés :";
+message_fr["UI::Report::SaveLog"] 			= "Enregistrer le rapport...";
+message_fr["UI::Report::Close"] 			= "Fermer";
+message_fr["UI::Report::SaveTitle"] 		= "Enregistrer le rapport d'avertissements";
+message_fr["UI::Report::Saved"] 			= "Rapport enregistré :";
+message_fr["UI::Report::SaveFailed"] 		= "Impossible d'écrire le fichier de rapport.";
+message_fr["UI::Label::FlagWarnings"] 		= "Signaler les calques concernés (Rouge)";
+message_fr["Blending::Normal"] 				= "Normal";
+message_fr["Log::Title"] 					= "TVPaint 12 -> After Effects : rapport d'avertissements d'import";
+message_fr["Log::Generated"] 				= "Généré le :";
+message_fr["Log::Shot"] 					= "Plan :";
 
 var message_en = [];
 message_en["Error::Interruption"] 			= "Exit Script.";
@@ -416,6 +439,29 @@ message_en["UI::Browser::ImportBtn"] 		= "Import Selected Shots";
 message_en["UI::Browser::ColShot"] 			= "Shot Folder";
 message_en["UI::Browser::ColDate"] 			= "Date Modified";
 message_en["UI::Browser::ColStatus"] 		= "JSON Status";
+// --- Import Warning Report ---
+message_en["UI::Report::Title"] 			= "Import Report";
+message_en["UI::Report::Headline"] 			= "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce.";
+message_en["UI::Report::Intro"] 			= "The import completed. These layers were set to Normal -- review them before validation.";
+message_en["UI::Report::Flagged"] 			= "These layers have been given a Red label in their compositions.";
+message_en["UI::Report::GroupTitle"] 		= "Summary by blending mode:";
+message_en["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 layer(s) in %4 shot(s)";
+message_en["UI::Report::ColShot"] 			= "Shot";
+message_en["UI::Report::ColComp"] 			= "Composition";
+message_en["UI::Report::ColLayer"] 			= "Layer";
+message_en["UI::Report::ColMode"] 			= "TVPaint Mode";
+message_en["UI::Report::ColApplied"] 		= "Applied in AE";
+message_en["UI::Report::Details"] 			= "Affected layers:";
+message_en["UI::Report::SaveLog"] 			= "Save Log...";
+message_en["UI::Report::Close"] 			= "Close";
+message_en["UI::Report::SaveTitle"] 		= "Save Warning Log";
+message_en["UI::Report::Saved"] 			= "Log saved:";
+message_en["UI::Report::SaveFailed"] 		= "Could not write the log file.";
+message_en["UI::Label::FlagWarnings"] 		= "Flag Affected Layers (Red)";
+message_en["Blending::Normal"] 				= "Normal";
+message_en["Log::Title"] 					= "TVPaint 12 -> After Effects : Import Warning Report";
+message_en["Log::Generated"] 				= "Generated:";
+message_en["Log::Shot"] 					= "Shot:";
 
 var message_ja = [];
 message_ja["Error::Interruption"] 			= "スクリプトを中止する。";
@@ -461,6 +507,29 @@ message_ja["UI::Browser::ImportBtn"] 		= "選択したショットを読み込�
 message_ja["UI::Browser::ColShot"] 			= "ショットフォルダー";
 message_ja["UI::Browser::ColDate"] 			= "更新日時";
 message_ja["UI::Browser::ColStatus"] 		= "JSON 状態";
+// --- Import Warning Report ---
+message_ja["UI::Report::Title"] 			= "読み込みレポート";
+message_ja["UI::Report::Headline"] 			= "%2 個のショット内の %1 個のレイヤーで、After Effects では再現できない描画モードが使用されています。";
+message_ja["UI::Report::Intro"] 			= "読み込みは完了しました。これらのレイヤーは「通常」に設定されていますので、確認してください。";
+message_ja["UI::Report::Flagged"] 			= "これらのレイヤーには、各コンポジション内で赤のラベルが設定されました。";
+message_ja["UI::Report::GroupTitle"] 		= "描画モード別の集計:";
+message_ja["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 ショット / %3 レイヤー";
+message_ja["UI::Report::ColShot"] 			= "ショット";
+message_ja["UI::Report::ColComp"] 			= "コンポジション";
+message_ja["UI::Report::ColLayer"] 			= "レイヤー";
+message_ja["UI::Report::ColMode"] 			= "TVPaint の描画モード";
+message_ja["UI::Report::ColApplied"] 		= "AE での適用";
+message_ja["UI::Report::Details"] 			= "対象レイヤー:";
+message_ja["UI::Report::SaveLog"] 			= "ログを保存...";
+message_ja["UI::Report::Close"] 			= "閉じる";
+message_ja["UI::Report::SaveTitle"] 		= "警告ログを保存";
+message_ja["UI::Report::Saved"] 			= "ログを保存しました:";
+message_ja["UI::Report::SaveFailed"] 		= "ログファイルを書き込めませんでした。";
+message_ja["UI::Label::FlagWarnings"] 		= "対象レイヤーにラベルを付ける (赤)";
+message_ja["Blending::Normal"] 				= "通常";
+message_ja["Log::Title"] 					= "TVPaint 12 -> After Effects : 読み込み警告レポート";
+message_ja["Log::Generated"] 				= "生成日時:";
+message_ja["Log::Shot"] 					= "ショット:";
 
 var message_zh = [];
 message_zh["Error::Interruption"] 			= "退出脚本";
@@ -506,6 +575,29 @@ message_zh["UI::Browser::ImportBtn"] 		= "导入所选镜头";
 message_zh["UI::Browser::ColShot"] 			= "镜头文件夹";
 message_zh["UI::Browser::ColDate"] 			= "修改日期";
 message_zh["UI::Browser::ColStatus"] 		= "JSON 状态";
+// --- Import Warning Report ---
+message_zh["UI::Report::Title"] 			= "导入报告";
+message_zh["UI::Report::Headline"] 			= "%2 个镜头中的 %1 个图层使用了 After Effects 无法还原的混合模式。";
+message_zh["UI::Report::Intro"] 			= "导入已完成。这些图层已设置为“正常”，请在交付前检查。";
+message_zh["UI::Report::Flagged"] 			= "这些图层已在各自的合成中标记为红色标签。";
+message_zh["UI::Report::GroupTitle"] 		= "按混合模式汇总:";
+message_zh["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 个镜头 / %3 个图层";
+message_zh["UI::Report::ColShot"] 			= "镜头";
+message_zh["UI::Report::ColComp"] 			= "合成";
+message_zh["UI::Report::ColLayer"] 			= "图层";
+message_zh["UI::Report::ColMode"] 			= "TVPaint 混合模式";
+message_zh["UI::Report::ColApplied"] 		= "AE 中应用";
+message_zh["UI::Report::Details"] 			= "受影响的图层:";
+message_zh["UI::Report::SaveLog"] 			= "保存日志...";
+message_zh["UI::Report::Close"] 			= "关闭";
+message_zh["UI::Report::SaveTitle"] 		= "保存警告日志";
+message_zh["UI::Report::Saved"] 			= "日志已保存:";
+message_zh["UI::Report::SaveFailed"] 		= "无法写入日志文件。";
+message_zh["UI::Label::FlagWarnings"] 		= "标记受影响的图层 (红色)";
+message_zh["Blending::Normal"] 				= "正常";
+message_zh["Log::Title"] 					= "TVPaint 12 -> After Effects : 导入警告报告";
+message_zh["Log::Generated"] 				= "生成时间:";
+message_zh["Log::Shot"] 					= "镜头:";
 
 // Fill Languages in message Table
 var message = [];
@@ -725,6 +817,99 @@ function FormatDate(dateObj) {
     
     function pad(n) { return (n < 10 ? "0" : "") + n; }
     return y + "-" + pad(m) + "-" + pad(d) + " " + pad(hr) + ":" + pad(min) + ":" + pad(sec);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// Import Warning Collection
+//
+// An unsupported blending mode used to raise one modal alert per layer, which made a
+// multi-shot batch impossible to leave unattended. Warnings are collected here instead
+// and presented once, after the whole run, by ShowWarningReport().
+
+var importWarnings = [];
+
+function ResetImportWarnings() {
+    importWarnings = [];
+}
+
+function AddImportWarning( iShot, iComp, iLayer, iRequestedMode, iAppliedMode ) {
+    importWarnings.push({
+        shot:      iShot,
+        comp:      iComp,
+        layer:     iLayer,
+        requested: iRequestedMode,
+        applied:   iAppliedMode
+    });
+}
+
+// Localized lookup with an English fallback, matching the idiom used by the Shot Browser.
+function Msg( iKey, iFallback ) {
+    var value = message[lang][iKey];
+    if( value === undefined || value === null || value === "" ) {
+        return iFallback;
+    }
+    return value;
+}
+
+// Substitutes %1, %2, ... in a localized string. Word order differs between languages
+// (Japanese and Chinese put the shot count first), so every message carrying numbers
+// uses numbered placeholders instead of concatenation.
+function FormatMessage( iString, iArgs ) {
+    var out = String( iString );
+    for( var i = 0; i < iArgs.length; i++ ) {
+        out = out.split( "%" + (i + 1) ).join( String( iArgs[i] ) );
+    }
+    return out;
+}
+
+// Distinct shot count across the collected warnings.
+function CountWarnedShots( iWarnings ) {
+    var shots = [];
+    for( var i = 0; i < iWarnings.length; i++ ) {
+        var seen = false;
+        for( var s = 0; s < shots.length; s++ ) {
+            if( shots[s] === iWarnings[i].shot ) {
+                seen = true;
+                break;
+            }
+        }
+        if( !seen ) {
+            shots.push( iWarnings[i].shot );
+        }
+    }
+    return shots.length;
+}
+
+// Groups warnings by "requested mode -> applied mode" so the report can lead with a
+// short summary instead of only a long per-layer table.
+function GroupWarningsByMode( iWarnings ) {
+    var groups = [];
+    for( var i = 0; i < iWarnings.length; i++ ) {
+        var w = iWarnings[i];
+        var group = null;
+        for( var g = 0; g < groups.length; g++ ) {
+            if( groups[g].requested === w.requested && groups[g].applied === w.applied ) {
+                group = groups[g];
+                break;
+            }
+        }
+        if( group === null ) {
+            group = { requested: w.requested, applied: w.applied, count: 0, shots: [] };
+            groups.push( group );
+        }
+        group.count++;
+        var seenShot = false;
+        for( var k = 0; k < group.shots.length; k++ ) {
+            if( group.shots[k] === w.shot ) {
+                seenShot = true;
+                break;
+            }
+        }
+        if( !seenShot ) {
+            group.shots.push( w.shot );
+        }
+    }
+    return groups;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -989,7 +1174,7 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // GUI Panel
-var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:400});
+var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:440});
 var staticTextInfo 				= importPanel.add( "statictext", 	{x:25,  y:10,  width:400, height:25}, 	message[lang]["UI::Label::Info"]			);
 var buttonBrowse 				= importPanel.add( "button", 		{x:25,  y:45,  width:400, height:26}, 	message[lang]["UI::Label::Browse"]			);
 var staticTextSettingsTitle 	= importPanel.add( "statictext", 	{x:25,  y:80,  width:200, height:20}, 	message[lang]["UI::Label::Settings"]		);
@@ -1008,6 +1193,7 @@ var staticTextSeqSorting 		= importPanel.add( "statictext", 	{x:25, y:315, width
 var ddListArraySeqSorting 		= new Array( 	message[lang]["UI::Label::Sequence::Index"], 
 												message[lang]["UI::Label::Sequence::Name"] );
 var dropdownlistSeqSorting 		= importPanel.add( "dropdownlist", 	{x:25, y:345, width:300, height:20}, 	ddListArraySeqSorting );
+var checkboxFlagWarnings 		= importPanel.add( "checkbox", 		{x:25, y:385, width:400, height:20}, 	message[lang]["UI::Label::FlagWarnings"]	);
 
 // Restore persisted settings with Native Sequence (1) as default
 var savedSeqImportMode 			= LoadIntSetting("SeqImportMode", 1);
@@ -1027,6 +1213,7 @@ if (savedCamMode === 2) {
 }
 
 checkboxLayerColors.value 		= LoadBoolSetting("LayerColors", true);
+checkboxFlagWarnings.value 		= LoadBoolSetting("FlagWarnings", false);
 checkboxPrePostBehaviours.value = LoadBoolSetting("PrePostBehaviours", true);
 checkboxTimeRemap.value 		= LoadBoolSetting("TimeRemap", true);
 checkboxBlendingModes.value 	= LoadBoolSetting("BlendingModes", true);
@@ -1045,6 +1232,7 @@ function SaveAllSettings() {
     SaveSetting("ImportCamera", checkboxImportCamera.value);
     SaveSetting("CameraMode", radioCameraRaw.value ? 2 : 1);
     SaveSetting("LayerColors", checkboxLayerColors.value);
+    SaveSetting("FlagWarnings", checkboxFlagWarnings.value);
     SaveSetting("PrePostBehaviours", checkboxPrePostBehaviours.value);
     SaveSetting("TimeRemap", checkboxTimeRemap.value);
     SaveSetting("BlendingModes", checkboxBlendingModes.value);
@@ -1058,6 +1246,7 @@ function GetCurrentSettings() {
     return {
         mode: scriptMode,
         layerColors: checkboxLayerColors.value,
+        flagWarnings: checkboxFlagWarnings.value,
         prepostBehav: checkboxPrePostBehaviours.value,
         sortingMode: dropdownlistSeqSorting.selection ? dropdownlistSeqSorting.selection.index : 0,
         blending: checkboxBlendingModes.value,
@@ -1086,6 +1275,7 @@ checkboxTimeRemap.onClick = function() {
 };
 
 checkboxLayerColors.onClick = function() { SaveAllSettings(); };
+checkboxFlagWarnings.onClick = function() { SaveAllSettings(); };
 checkboxBlendingModes.onClick = function() { SaveAllSettings(); };
 checkboxPrePostBehaviours.onClick = function() { SaveAllSettings(); };
 dropdownlistSeqImport.onChange = function() { SaveAllSettings(); };
@@ -1221,6 +1411,7 @@ function IsInvalid( iObject, iError ) {
 function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 	var mode 		= settings.mode;
 	var colorOn 	= settings.layerColors;
+	var flagWarnOn 	= (settings.flagWarnings === true);
 	var prepostOn 	= settings.prepostBehav;
 	var sortMode 	= settings.sortingMode;
 	var blendingOn 	= settings.blending;
@@ -1476,8 +1667,20 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 			if( blendingModeSupported ) {
 				layer.blendingMode = BlendingMatch[ currentBlendingMode ];
 			} else {
-				alert(message[lang]["Error::BadBlendingMode"] + ": " + currentBlendingMode );
 				layer.blendingMode = BlendingMode.NORMAL;
+
+				// A layer with no "blending-mode" entry at all is not an anomaly -- Normal
+				// is the correct result -- so only a named, unconvertible mode is reported.
+				if( currentBlendingMode !== "" ) {
+					AddImportWarning( 	dataFileName,
+										compName,
+										ReadStringFromData( currentLayerData, "name", "Undefined" ),
+										currentBlendingMode,
+										Msg( "Blending::Normal", "Normal" ) );
+					if( flagWarnOn ) {
+						layer.label = 1;	// 1 = Red, per the colorLabels table above.
+					}
+				}
 			}
 		}
 		
@@ -1750,9 +1953,169 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
+// Import Warning Report
+//
+// Shown once, after every shot in the batch has been processed, so that an unattended
+// multi-shot import is never held up waiting for a click.
+
+function ShowWarningReport( iSettings ) {
+    if( importWarnings.length === 0 ) return;
+
+    var groups    = GroupWarningsByMode( importWarnings );
+    var shotCount = CountWarnedShots( importWarnings );
+    var flagged   = ( iSettings && iSettings.flagWarnings === true );
+
+    var win = new Window("dialog", Msg("UI::Report::Title", "Import Report") + " -- v." + scriptVersion_XX);
+    win.orientation = "column";
+    win.alignChildren = ["fill", "top"];
+    win.spacing = 8;
+    win.margins = 12;
+
+    // --- Headline & explanation ---
+    var txtHeadline = win.add("statictext", undefined,
+        FormatMessage( Msg("UI::Report::Headline",
+                           "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce."),
+                       [ importWarnings.length, shotCount ] ),
+        {multiline: true});
+    txtHeadline.preferredSize = [660, 34];
+    try {
+        txtHeadline.graphics.font = ScriptUI.newFont( txtHeadline.graphics.font.name, ScriptUI.FontStyle.BOLD, 13 );
+    } catch(e) {}
+
+    var txtIntro = win.add("statictext", undefined,
+        Msg("UI::Report::Intro", "The import completed. These layers were set to Normal -- review them before validation."),
+        {multiline: true});
+    txtIntro.preferredSize = [660, 32];
+
+    if( flagged ) {
+        var txtFlagged = win.add("statictext", undefined,
+            Msg("UI::Report::Flagged", "These layers have been given a Red label in their compositions."),
+            {multiline: true});
+        txtFlagged.preferredSize = [660, 20];
+    }
+
+    // --- Summary grouped by blending mode ---
+    win.add("statictext", undefined, Msg("UI::Report::GroupTitle", "Summary by blending mode:"));
+    var summaryList = win.add("listbox", undefined, []);
+    summaryList.preferredSize = [660, 76];
+    for( var g = 0; g < groups.length; g++ ) {
+        summaryList.add("item",
+            FormatMessage( Msg("UI::Report::GroupLine", "%1  ->  %2   :   %3 layer(s) in %4 shot(s)"),
+                           [ groups[g].requested, groups[g].applied, groups[g].count, groups[g].shots.length ] ));
+    }
+
+    // --- Per-layer detail ---
+    win.add("statictext", undefined, Msg("UI::Report::Details", "Affected layers:"));
+    var detailList = win.add("listbox", undefined, [], {
+        numberOfColumns: 5,
+        showHeaders: true,
+        columnTitles: [ Msg("UI::Report::ColShot",    "Shot"),
+                        Msg("UI::Report::ColComp",    "Composition"),
+                        Msg("UI::Report::ColLayer",   "Layer"),
+                        Msg("UI::Report::ColMode",    "TVPaint Mode"),
+                        Msg("UI::Report::ColApplied", "Applied in AE") ],
+        columnWidths: [ 90, 150, 160, 140, 110 ]
+    });
+    detailList.preferredSize = [660, 240];
+    for( var i = 0; i < importWarnings.length; i++ ) {
+        var w = importWarnings[i];
+        var row = detailList.add("item", w.shot);
+        row.subItems[0].text = w.comp;
+        row.subItems[1].text = w.layer;
+        row.subItems[2].text = w.requested;
+        row.subItems[3].text = w.applied;
+    }
+
+    // --- Actions ---
+    var actionGroup = win.add("group");
+    actionGroup.orientation = "row";
+    actionGroup.alignChildren = ["left", "center"];
+    var btnSaveLog = actionGroup.add("button", undefined, Msg("UI::Report::SaveLog", "Save Log..."));
+    btnSaveLog.preferredSize = [160, 26];
+    var spacer = actionGroup.add("group");
+    spacer.alignment = ["fill", "fill"];
+    var btnClose = actionGroup.add("button", undefined, Msg("UI::Report::Close", "Close"), {name:"ok"});
+    btnClose.preferredSize = [110, 26];
+
+    btnSaveLog.onClick = function() { SaveWarningLog( iSettings ); };
+    btnClose.onClick   = function() { win.close(); };
+
+    win.center();
+    win.show();
+}
+
+// Writes the collected warnings to a plain text file so the summary stays actionable
+// after the dialog is dismissed.
+function SaveWarningLog( iSettings ) {
+    if( importWarnings.length === 0 ) return;
+
+    var now = new Date();
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    var stamp = now.getFullYear() + pad(now.getMonth() + 1) + pad(now.getDate())
+              + "_" + pad(now.getHours()) + pad(now.getMinutes()) + pad(now.getSeconds());
+
+    var suggested = new File( Folder.desktop.fsName + "/TVPaint_Import_Warnings_" + stamp + ".txt" );
+    var target = suggested.saveDlg( Msg("UI::Report::SaveTitle", "Save Warning Log") );
+    if( target === null ) return;
+
+    var groups    = GroupWarningsByMode( importWarnings );
+    var shotCount = CountWarnedShots( importWarnings );
+    var rule      = "--------------------------------------------------------------------------";
+
+    target.encoding = "UTF-8";
+    if( !target.open("w") ) {
+        alert( Msg("UI::Report::SaveFailed", "Could not write the log file.") );
+        return;
+    }
+
+    target.writeln( Msg("Log::Title", "TVPaint 12 -> After Effects : Import Warning Report") );
+    target.writeln( rule );
+    target.writeln( Msg("Log::Generated", "Generated:") + " " + FormatDate( now ) );
+    target.writeln( "v." + scriptVersion_XX );
+    target.writeln( "" );
+    target.writeln( FormatMessage( Msg("UI::Report::Headline",
+                                       "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce."),
+                                   [ importWarnings.length, shotCount ] ) );
+    target.writeln( Msg("UI::Report::Intro",
+                        "The import completed. These layers were set to Normal -- review them before validation.") );
+    if( iSettings && iSettings.flagWarnings === true ) {
+        target.writeln( Msg("UI::Report::Flagged", "These layers have been given a Red label in their compositions.") );
+    }
+    target.writeln( "" );
+    target.writeln( Msg("UI::Report::GroupTitle", "Summary by blending mode:") );
+    target.writeln( rule );
+    for( var g = 0; g < groups.length; g++ ) {
+        target.writeln( "  " + FormatMessage( Msg("UI::Report::GroupLine", "%1  ->  %2   :   %3 layer(s) in %4 shot(s)"),
+                                              [ groups[g].requested, groups[g].applied,
+                                                groups[g].count, groups[g].shots.length ] ) );
+    }
+    target.writeln( "" );
+    target.writeln( Msg("UI::Report::Details", "Affected layers:") );
+    target.writeln( rule );
+
+    // Grouped by shot, so the log reads the way the project panel is organised.
+    var lastShot = null;
+    for( var i = 0; i < importWarnings.length; i++ ) {
+        var w = importWarnings[i];
+        if( w.shot !== lastShot ) {
+            if( lastShot !== null ) target.writeln( "" );
+            target.writeln( Msg("Log::Shot", "Shot:") + " " + w.shot + "   [" + w.comp + "]" );
+            lastShot = w.shot;
+        }
+        target.writeln( "    " + w.layer + "   " + w.requested + "  ->  " + w.applied );
+    }
+
+    target.close();
+    alert( Msg("UI::Report::Saved", "Log saved:") + endl + target.fsName );
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 // Batch / Multi-file Execution Controller
 function ExecuteImport(jsonFiles, settings) {
     if (!jsonFiles || jsonFiles.length === 0) return;
+
+    ResetImportWarnings();
 
     var totalShots = jsonFiles.length;
 
@@ -1773,6 +2136,10 @@ function ExecuteImport(jsonFiles, settings) {
     progressWindow.update();
     $.sleep(500);
     progressWindow.close();
+
+    if( importWarnings.length > 0 ) {
+        ShowWarningReport( settings );
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1810,6 +2177,11 @@ $.global.ImportTVPaintJSON = function(fileOrPath, customSettings) {
     };
     
     var finalSettings = customSettings || defaultSettings;
+
+    // Automation must never be interrupted by a dialog, so no report is shown here.
+    // The collected warnings are published for the caller to inspect instead.
+    ResetImportWarnings();
     ImportSingleTVPJson(f, finalSettings, 0, 1);
+    $.global.ImportTVPaintJSONWarnings = importWarnings;
     return true;
 };
