@@ -67,6 +67,8 @@ Three levels, cheapest first:
 | Corrupt-but-present PNG | **Not detected** | 1390's `MASK_oce_brada/0080.png` has a broken header; AE imported it without error |
 | Full-folder import | **Pass** | 33 shots: 42 blending warnings in 29 shots, 8 layers failed in 5 shots, batch completed |
 | Partial frame gaps | **Pass** | Caught at `2/3`, `2/7`, `1/18` -- not just wholly-absent folders |
+| No blocking modals left | **Pass** | `D_no_layers` and `F_no_link` both reported without an alert; run completed unattended |
+| Partial shot recovered | **Pass** | `F_no_link` dropped its one bad layer and imported the other four |
 | macOS | **Untested** | Windows only |
 
 ## Fixed: a missing image file used to abort the whole batch
@@ -127,11 +129,12 @@ import, which is a different and much more expensive check.
 
 ## Other unfixed issues
 
-- `Error::MissingData` still alerts and aborts a shot, at line 1303 (missing
-  `project.clip.layers`) and line 1358 (a layer with no `link` array). Confirmed on the
-  synthetic `D_no_layers` shot: the modal fired mid-batch and had to be dismissed by
-  hand. The per-shot `try`/`catch` keeps the run alive, but this is the last blocking
-  dialog, and it should fold into the report the same way the file failures did.
+- **Fixed.** `Error::MissingData` no longer alerts. Both sites record into the report
+  instead: a missing `project.clip.layers` skips the shot, and a layer with no `link`
+  array is dropped on its own with its empty containers removed, so the rest of the
+  shot still builds. `IsInvalid()` was removed with them -- raising those alerts was
+  its only purpose. No `alert()` remains anywhere in the import path; the survivors are
+  the two pre-flight checks and the report's own dialogs.
 - Import speed: 528 frames took 261 s, so the full 33-shot folder would take ~45 min.
 
 ## Known gotchas when testing

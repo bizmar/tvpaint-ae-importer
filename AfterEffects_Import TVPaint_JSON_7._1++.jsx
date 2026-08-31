@@ -378,10 +378,12 @@ message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont �
 message_fr["UI::Report::Flagged"] 			= "Etiqueter en Rouge les calques non resolus (encore sur Normal)";
 message_fr["UI::Report::FlaggedFiles"] 		= "Etiqueter en Rouge les compositions et dossiers de ces plans";
 message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint -- Signaler les calques concernes";
-message_fr["UI::Report::FilesHeadline"] 	= "%1 calque(s) dans %2 plan(s) ont ete ignores : leurs fichiers images sont introuvables.";
-message_fr["UI::Report::ColMissing"] 		= "Images manquantes";
+message_fr["UI::Report::FilesHeadline"] 	= "%1 calque(s) dans %2 plan(s) n'ont pas pu etre importes :";
+message_fr["UI::Report::ColMissing"] 		= "Probleme";
 message_fr["UI::Report::FilesTitle"] 		= "IMPORTS ECHOUES -- ces calques ne sont pas dans le projet";
 message_fr["UI::Report::FilesAlert"] 		= "!  %1 calque(s) dans %2 plan(s) n'ont PAS ete importes. Ces plans devront etre reimportes.";
+message_fr["UI::Report::NoLayers"] 			= "Aucune donnee de calque dans le fichier .json";
+message_fr["UI::Report::NoFrames"] 			= "Aucune liste d'images pour ce calque";
 message_fr["UI::Report::GroupTitle"] 		= "Récapitulatif par mode de fusion :";
 message_fr["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 calque(s) dans %4 plan(s)";
 message_fr["UI::Report::ColShot"] 			= "Plan";
@@ -457,10 +459,12 @@ message_en["UI::Report::Intro"] 			= "The import completed. These layers were se
 message_en["UI::Report::Flagged"] 			= "Label unresolved layers Red (still set to Normal)";
 message_en["UI::Report::FlaggedFiles"] 		= "Label these shots' compositions and folders Red";
 message_en["UI::Report::FlagUndo"] 			= "TVPaint Import -- Flag Affected Layers";
-message_en["UI::Report::FilesHeadline"] 	= "%1 layer(s) in %2 shot(s) were skipped: their image files were not found.";
-message_en["UI::Report::ColMissing"] 		= "Missing frames";
+message_en["UI::Report::FilesHeadline"] 	= "%1 layer(s) in %2 shot(s) could not be imported:";
+message_en["UI::Report::ColMissing"] 		= "Problem";
 message_en["UI::Report::FilesTitle"] 		= "FAILED IMPORTS -- these layers are not in the project";
 message_en["UI::Report::FilesAlert"] 		= "!  %1 layer(s) in %2 shot(s) did NOT import. Those shots will need re-importing.";
+message_en["UI::Report::NoLayers"] 			= "No layer data in the .json file";
+message_en["UI::Report::NoFrames"] 			= "No frame list for this layer";
 message_en["UI::Report::GroupTitle"] 		= "Summary by blending mode:";
 message_en["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 layer(s) in %4 shot(s)";
 message_en["UI::Report::ColShot"] 			= "Shot";
@@ -536,10 +540,12 @@ message_ja["UI::Report::Intro"] 			= "読み込みは完了しました。これ
 message_ja["UI::Report::Flagged"] 			= "未解決のレイヤー (通常のまま) に赤のラベルを付ける";
 message_ja["UI::Report::FlaggedFiles"] 		= "これらのショットのコンポジションとフォルダーに赤のラベルを付ける";
 message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み -- 対象レイヤーにラベルを付ける";
-message_ja["UI::Report::FilesHeadline"] 	= "%2 個のショット内の %1 個のレイヤーをスキップしました: 画像ファイルが見つかりません。";
-message_ja["UI::Report::ColMissing"] 		= "見つからないファイル";
+message_ja["UI::Report::FilesHeadline"] 	= "%2 個のショット内の %1 個のレイヤーを読み込めませんでした:";
+message_ja["UI::Report::ColMissing"] 		= "問題";
 message_ja["UI::Report::FilesTitle"] 		= "読み込み失敗 -- これらのレイヤーはプロジェクトにありません";
 message_ja["UI::Report::FilesAlert"] 		= "!  %2 個のショット内の %1 個のレイヤーが読み込まれませんでした。これらのショットは再読み込みが必要です。";
+message_ja["UI::Report::NoLayers"] 			= ".json ファイルにレイヤーデータがありません";
+message_ja["UI::Report::NoFrames"] 			= "このレイヤーには画像リストがありません";
 message_ja["UI::Report::GroupTitle"] 		= "描画モード別の集計:";
 message_ja["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 ショット / %3 レイヤー";
 message_ja["UI::Report::ColShot"] 			= "ショット";
@@ -615,10 +621,12 @@ message_zh["UI::Report::Intro"] 			= "导入已完成。这些图层已设置为
 message_zh["UI::Report::Flagged"] 			= "将未解决的图层 (仍为正常) 标为红色";
 message_zh["UI::Report::FlaggedFiles"] 		= "将这些镜头的合成和文件夹标为红色";
 message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入 -- 标记受影响的图层";
-message_zh["UI::Report::FilesHeadline"] 	= "已跳过 %2 个镜头中的 %1 个图层: 未找到其图像文件。";
-message_zh["UI::Report::ColMissing"] 		= "缺失的帧";
+message_zh["UI::Report::FilesHeadline"] 	= "%2 个镜头中的 %1 个图层无法导入:";
+message_zh["UI::Report::ColMissing"] 		= "问题";
 message_zh["UI::Report::FilesTitle"] 		= "导入失败 -- 这些图层不在项目中";
 message_zh["UI::Report::FilesAlert"] 		= "!  %2 个镜头中的 %1 个图层未能导入。这些镜头需要重新导入。";
+message_zh["UI::Report::NoLayers"] 			= ".json 文件中没有图层数据";
+message_zh["UI::Report::NoFrames"] 			= "此图层没有帧列表";
 message_zh["UI::Report::GroupTitle"] 		= "按混合模式汇总:";
 message_zh["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 个镜头 / %3 个图层";
 message_zh["UI::Report::ColShot"] 			= "镜头";
@@ -1490,14 +1498,6 @@ function ReadArrayFromData( iJsonObject, iPath ) {
 	return ReadFromData( iJsonObject, iPath, null );
 }
 
-function IsInvalid( iObject, iError ) {
-	var isNull = (iObject == null);
-	if( isNull ) {
-		alert( iError );
-	}
-	return isNull;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Core Single Shot Import Function
 function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
@@ -1582,7 +1582,17 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 	var layersFolder 			= app.project.items.addFolder("Layers_Compositions");
 	layersFolder.parentFolder 	= rootFolder;
 	var layersData   			= ReadArrayFromData( dataTree, "project.clip.layers" );
-	if( IsInvalid( layersData, message[lang]["Error::MissingData"] ) ) {
+	if( layersData === null || layersData === undefined ) {
+		// Was a modal alert, which stopped an unattended batch. Recorded and skipped
+		// instead; the shot is listed with the others in the end-of-run report.
+		AddFileFailure( dataFileName,
+						compName,
+						"--",
+						0,
+						0,
+						Msg( "UI::Report::NoLayers", "No layer data in the .json file" ),
+						root_composition,
+						rootFolder );
 		return;
 	}
 
@@ -1637,8 +1647,21 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 		////////////
 		// LINK DATA
 		var link 		= ReadArrayFromData( currentLayerData, "link" );
-		if( IsInvalid( link, message[lang]["Error::MissingData"] ) ) {
-			return;
+		if( link === null || link === undefined ) {
+			// Previously alerted and returned, abandoning the shot half-built -- which
+			// looks like a successful import until someone opens the comp. Now only this
+			// layer is dropped, its empty containers are removed, and the shot continues.
+			AddFileFailure( dataFileName,
+							compName,
+							ReadStringFromData( currentLayerData, "name", "Undefined" ),
+							0,
+							0,
+							Msg( "UI::Report::NoFrames", "No frame list for this layer" ),
+							root_composition,
+							rootFolder );
+			try { currentLayerFolder.remove(); } catch(eF) {}
+			try { layer_composition.remove(); } catch(eC) {}
+			continue;
 		}
 		var nbEntries 	= link.length;
 
@@ -2218,7 +2241,7 @@ function ShowWarningReport( iSettings ) {
 
         var txtFiles = failPanel.add("statictext", undefined,
             FormatMessage( Msg("UI::Report::FilesHeadline",
-                               "%1 layer(s) in %2 shot(s) were skipped: their image files were not found."),
+                               "%1 layer(s) in %2 shot(s) could not be imported:"),
                            [ importFileFailures.length, failShots.length ] ),
             {multiline: true});
         txtFiles.preferredSize = [630, 16];
@@ -2229,7 +2252,7 @@ function ShowWarningReport( iSettings ) {
             columnTitles: [ Msg("UI::Report::ColShot",    "Shot"),
                             Msg("UI::Report::ColComp",    "Composition"),
                             Msg("UI::Report::ColLayer",   "Layer"),
-                            Msg("UI::Report::ColMissing", "Missing frames") ],
+                            Msg("UI::Report::ColMissing", "Problem") ],
             columnWidths: [ 90, 150, 190, 200 ]
         });
         failList.preferredSize = [630, RowsToPixels( importFileFailures.length, 6, 16, true )];
