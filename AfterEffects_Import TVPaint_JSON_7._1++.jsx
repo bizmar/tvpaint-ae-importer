@@ -394,6 +394,12 @@ message_fr["Blending::Normal"] 				= "Normal";
 message_fr["Log::Title"] 					= "TVPaint 12 -> After Effects : rapport d'avertissements d'import";
 message_fr["Log::Generated"] 				= "Généré le :";
 message_fr["Log::Shot"] 					= "Plan :";
+message_fr["UI::Report::FixLabel"] 			= "Regler le(s) calque(s) selectionne(s) sur :";
+message_fr["UI::Report::ApplyBtn"] 			= "Appliquer a la selection";
+message_fr["UI::Report::FixDone"] 			= "%1 calque(s) regle(s) sur %2.";
+message_fr["UI::Report::FixNone"] 			= "Selectionnez d'abord une ou plusieurs lignes.";
+message_fr["UI::Report::FixFailed"] 		= "%1 calque(s) n'ont pas pu etre modifies -- l'import a peut-etre ete annule.";
+message_fr["UI::Report::UndoName"] 			= "Import TVPaint -- Modifier les modes de fusion";
 
 var message_en = [];
 message_en["Error::Interruption"] 			= "Exit Script.";
@@ -462,6 +468,12 @@ message_en["Blending::Normal"] 				= "Normal";
 message_en["Log::Title"] 					= "TVPaint 12 -> After Effects : Import Warning Report";
 message_en["Log::Generated"] 				= "Generated:";
 message_en["Log::Shot"] 					= "Shot:";
+message_en["UI::Report::FixLabel"] 			= "Set selected layer(s) to:";
+message_en["UI::Report::ApplyBtn"] 			= "Apply to Selected";
+message_en["UI::Report::FixDone"] 			= "%1 layer(s) set to %2.";
+message_en["UI::Report::FixNone"] 			= "Select one or more rows first.";
+message_en["UI::Report::FixFailed"] 		= "%1 layer(s) could not be changed -- the import may have been undone.";
+message_en["UI::Report::UndoName"] 			= "TVPaint Import -- Change Blending Modes";
 
 var message_ja = [];
 message_ja["Error::Interruption"] 			= "スクリプトを中止する。";
@@ -530,6 +542,12 @@ message_ja["Blending::Normal"] 				= "通常";
 message_ja["Log::Title"] 					= "TVPaint 12 -> After Effects : 読み込み警告レポート";
 message_ja["Log::Generated"] 				= "生成日時:";
 message_ja["Log::Shot"] 					= "ショット:";
+message_ja["UI::Report::FixLabel"] 			= "選択したレイヤーの描画モード:";
+message_ja["UI::Report::ApplyBtn"] 			= "選択項目に適用";
+message_ja["UI::Report::FixDone"] 			= "%1 個のレイヤーを「%2」に設定しました。";
+message_ja["UI::Report::FixNone"] 			= "先に行を選択してください。";
+message_ja["UI::Report::FixFailed"] 		= "%1 個のレイヤーを変更できませんでした。読み込みが取り消された可能性があります。";
+message_ja["UI::Report::UndoName"] 			= "TVPaint 読み込み -- 描画モードの変更";
 
 var message_zh = [];
 message_zh["Error::Interruption"] 			= "退出脚本";
@@ -598,6 +616,12 @@ message_zh["Blending::Normal"] 				= "正常";
 message_zh["Log::Title"] 					= "TVPaint 12 -> After Effects : 导入警告报告";
 message_zh["Log::Generated"] 				= "生成时间:";
 message_zh["Log::Shot"] 					= "镜头:";
+message_zh["UI::Report::FixLabel"] 			= "将所选图层设为:";
+message_zh["UI::Report::ApplyBtn"] 			= "应用到所选";
+message_zh["UI::Report::FixDone"] 			= "已将 %1 个图层设为 %2。";
+message_zh["UI::Report::FixNone"] 			= "请先选择一行或多行。";
+message_zh["UI::Report::FixFailed"] 		= "%1 个图层无法更改 -- 导入可能已被撤销。";
+message_zh["UI::Report::UndoName"] 			= "TVPaint 导入 -- 更改混合模式";
 
 // Fill Languages in message Table
 var message = [];
@@ -832,14 +856,44 @@ function ResetImportWarnings() {
     importWarnings = [];
 }
 
-function AddImportWarning( iShot, iComp, iLayer, iRequestedMode, iAppliedMode ) {
+function AddImportWarning( iShot, iComp, iLayer, iRequestedMode, iAppliedMode, iLayerRef, iOriginalLabel ) {
     importWarnings.push({
         shot:      iShot,
         comp:      iComp,
         layer:     iLayer,
         requested: iRequestedMode,
-        applied:   iAppliedMode
+        applied:   iAppliedMode,
+        // Kept so the report can reassign the mode on the real layer afterwards.
+        layerRef:      iLayerRef,
+        originalLabel: iOriginalLabel
     });
+}
+
+// The blending modes offered in the report, built at run time so a constant missing
+// from a given After Effects version is skipped rather than throwing at load.
+function BuildBlendingModeChoices() {
+    var wanted = [
+        ["Normal", "NORMAL"], ["Dissolve", "DISSOLVE"], ["Darken", "DARKEN"],
+        ["Multiply", "MULTIPLY"], ["Color Burn", "COLOR_BURN"], ["Linear Burn", "LINEAR_BURN"],
+        ["Darker Color", "DARKER_COLOR"], ["Add", "ADD"], ["Lighten", "LIGHTEN"],
+        ["Screen", "SCREEN"], ["Color Dodge", "COLOR_DODGE"], ["Linear Dodge", "LINEAR_DODGE"],
+        ["Lighter Color", "LIGHTER_COLOR"], ["Overlay", "OVERLAY"], ["Soft Light", "SOFT_LIGHT"],
+        ["Hard Light", "HARD_LIGHT"], ["Linear Light", "LINEAR_LIGHT"], ["Vivid Light", "VIVID_LIGHT"],
+        ["Pin Light", "PIN_LIGHT"], ["Hard Mix", "HARD_MIX"], ["Difference", "DIFFERENCE"],
+        ["Exclusion", "EXCLUSION"], ["Subtract", "SUBTRACT"], ["Divide", "DIVIDE"],
+        ["Hue", "HUE"], ["Saturation", "SATURATION"], ["Color", "COLOR"],
+        ["Luminosity", "LUMINOSITY"], ["Alpha Add", "ALPHA_ADD"]
+    ];
+    var choices = [];
+    for( var i = 0; i < wanted.length; i++ ) {
+        try {
+            var mode = BlendingMode[ wanted[i][1] ];
+            if( mode !== undefined && mode !== null ) {
+                choices.push({ label: wanted[i][0], mode: mode });
+            }
+        } catch(e) {}
+    }
+    return choices;
 }
 
 // Localized lookup with an English fallback, matching the idiom used by the Shot Browser.
@@ -1672,11 +1726,14 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 				// A layer with no "blending-mode" entry at all is not an anomaly -- Normal
 				// is the correct result -- so only a named, unconvertible mode is reported.
 				if( currentBlendingMode !== "" ) {
+					var previousLabel = layer.label;
 					AddImportWarning( 	dataFileName,
 										compName,
 										ReadStringFromData( currentLayerData, "name", "Undefined" ),
 										currentBlendingMode,
-										Msg( "Blending::Normal", "Normal" ) );
+										Msg( "Blending::Normal", "Normal" ),
+										layer,
+										previousLabel );
 					if( flagWarnOn ) {
 						layer.label = 1;	// 1 = Red, per the colorLabels table above.
 					}
@@ -1958,6 +2015,15 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 // Shown once, after every shot in the batch has been processed, so that an unattended
 // multi-shot import is never held up waiting for a click.
 
+// Height for a listbox holding iRows rows, clamped between a minimum and a maximum
+// so the dialog neither opens mostly empty nor grows past the screen.
+function RowsToPixels( iRows, iMin, iMax, iHasHeader ) {
+    var rows = iRows;
+    if( rows < iMin ) rows = iMin;
+    if( rows > iMax ) rows = iMax;
+    return rows * 19 + ( iHasHeader ? 26 : 8 );
+}
+
 function ShowWarningReport( iSettings ) {
     if( importWarnings.length === 0 ) return;
 
@@ -1972,41 +2038,60 @@ function ShowWarningReport( iSettings ) {
     win.margins = 12;
 
     // --- Headline & explanation ---
-    var txtHeadline = win.add("statictext", undefined,
+    // Grouped in a panel so the visual hierarchy does not depend on the bold font
+    // being honoured, which varies between After Effects builds.
+    var headPanel = win.add("panel");
+    headPanel.orientation = "column";
+    headPanel.alignChildren = ["fill", "top"];
+    headPanel.margins = 10;
+    headPanel.spacing = 6;
+
+    var txtHeadline = headPanel.add("statictext", undefined,
         FormatMessage( Msg("UI::Report::Headline",
                            "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce."),
                        [ importWarnings.length, shotCount ] ),
         {multiline: true});
-    txtHeadline.preferredSize = [660, 34];
+    txtHeadline.preferredSize = [640, 30];
     try {
-        txtHeadline.graphics.font = ScriptUI.newFont( txtHeadline.graphics.font.name, ScriptUI.FontStyle.BOLD, 13 );
+        var headGfx = txtHeadline.graphics;
+        headGfx.font = ScriptUI.newFont( headGfx.font.name, ScriptUI.FontStyle.BOLD, headGfx.font.size + 1 );
     } catch(e) {}
 
-    var txtIntro = win.add("statictext", undefined,
+    var txtIntro = headPanel.add("statictext", undefined,
         Msg("UI::Report::Intro", "The import completed. These layers were set to Normal -- review them before validation."),
         {multiline: true});
-    txtIntro.preferredSize = [660, 32];
+    txtIntro.preferredSize = [640, 16];
 
     if( flagged ) {
-        var txtFlagged = win.add("statictext", undefined,
+        var txtFlagged = headPanel.add("statictext", undefined,
             Msg("UI::Report::Flagged", "These layers have been given a Red label in their compositions."),
             {multiline: true});
-        txtFlagged.preferredSize = [660, 20];
+        txtFlagged.preferredSize = [640, 16];
     }
 
     // --- Summary grouped by blending mode ---
     win.add("statictext", undefined, Msg("UI::Report::GroupTitle", "Summary by blending mode:"));
     var summaryList = win.add("listbox", undefined, []);
-    summaryList.preferredSize = [660, 76];
-    for( var g = 0; g < groups.length; g++ ) {
-        summaryList.add("item",
-            FormatMessage( Msg("UI::Report::GroupLine", "%1  ->  %2   :   %3 layer(s) in %4 shot(s)"),
-                           [ groups[g].requested, groups[g].applied, groups[g].count, groups[g].shots.length ] ));
+    summaryList.preferredSize = [660, RowsToPixels( groups.length, 1, 6, false )];
+
+    // Regrouped from the live warning records, so reassigning a mode is reflected here
+    // instead of leaving the summary contradicting the table below it.
+    function RefreshSummary() {
+        groups = GroupWarningsByMode( importWarnings );
+        summaryList.removeAll();
+        for( var g = 0; g < groups.length; g++ ) {
+            summaryList.add("item",
+                FormatMessage( Msg("UI::Report::GroupLine", "%1  ->  %2   :   %3 layer(s) in %4 shot(s)"),
+                               [ groups[g].requested, groups[g].applied,
+                                 groups[g].count, groups[g].shots.length ] ));
+        }
     }
+    RefreshSummary();
 
     // --- Per-layer detail ---
     win.add("statictext", undefined, Msg("UI::Report::Details", "Affected layers:"));
     var detailList = win.add("listbox", undefined, [], {
+        multiselect: true,
         numberOfColumns: 5,
         showHeaders: true,
         columnTitles: [ Msg("UI::Report::ColShot",    "Shot"),
@@ -2016,15 +2101,122 @@ function ShowWarningReport( iSettings ) {
                         Msg("UI::Report::ColApplied", "Applied in AE") ],
         columnWidths: [ 90, 150, 160, 140, 110 ]
     });
-    detailList.preferredSize = [660, 240];
-    for( var i = 0; i < importWarnings.length; i++ ) {
-        var w = importWarnings[i];
-        var row = detailList.add("item", w.shot);
-        row.subItems[0].text = w.comp;
-        row.subItems[1].text = w.layer;
-        row.subItems[2].text = w.requested;
-        row.subItems[3].text = w.applied;
+    detailList.preferredSize = [660, RowsToPixels( importWarnings.length, 4, 14, true )];
+
+    // Rebuilt from the warning records rather than by poking individual cells, so the
+    // table cannot drift out of step with the data after a mode is reassigned.
+    function RefreshDetail() {
+        detailList.removeAll();
+        for( var i = 0; i < importWarnings.length; i++ ) {
+            var w = importWarnings[i];
+            var row = detailList.add("item", w.shot);
+            row.subItems[0].text = w.comp;
+            row.subItems[1].text = w.layer;
+            row.subItems[2].text = w.requested;
+            row.subItems[3].text = w.applied;
+        }
     }
+    RefreshDetail();
+
+    // --- Reassign the mode on the real layers ---
+    var choices = BuildBlendingModeChoices();
+    var fixGroup = win.add("group");
+    fixGroup.orientation = "row";
+    fixGroup.alignChildren = ["left", "center"];
+    fixGroup.add("statictext", undefined, Msg("UI::Report::FixLabel", "Set selected layer(s) to:"));
+
+    var modeLabels = [];
+    for( var c = 0; c < choices.length; c++ ) {
+        modeLabels.push( choices[c].label );
+    }
+    var ddMode = fixGroup.add("dropdownlist", undefined, modeLabels);
+    ddMode.preferredSize = [180, 24];
+    if( ddMode.items.length > 0 ) {
+        ddMode.selection = 0;
+    }
+    var btnApply = fixGroup.add("button", undefined, Msg("UI::Report::ApplyBtn", "Apply to Selected"));
+    btnApply.preferredSize = [160, 24];
+
+    // Clicking a summary row selects every detail row using that blending mode, so a
+    // whole mode can be reassigned in one step.
+    summaryList.onChange = function() {
+        if( summaryList.selection === null ) return;
+        var g = groups[ summaryList.selection.index ];
+        var picked = [];
+        for( var r = 0; r < detailList.items.length; r++ ) {
+            if( importWarnings[r].requested === g.requested ) {
+                picked.push( detailList.items[r] );
+            }
+        }
+        detailList.selection = picked;
+    };
+
+    btnApply.onClick = function() {
+        var sel = detailList.selection;
+        if( sel === null || (sel instanceof Array && sel.length === 0) ) {
+            alert( Msg("UI::Report::FixNone", "Select one or more rows first.") );
+            return;
+        }
+        if( !(sel instanceof Array) ) {
+            sel = [sel];
+        }
+        if( ddMode.selection === null ) return;
+        var choice = choices[ ddMode.selection.index ];
+
+        // Resolve the row indices up front: the lists are rebuilt below, which
+        // invalidates the ListItem objects held in "sel".
+        var targets = [];
+        for( var t = 0; t < sel.length; t++ ) {
+            targets.push( sel[t].index );
+        }
+
+        var changed = 0;
+        var failed  = 0;
+        app.beginUndoGroup( Msg("UI::Report::UndoName", "TVPaint Import -- Change Blending Modes") );
+        try {
+            for( var i = 0; i < targets.length; i++ ) {
+                var warning = importWarnings[ targets[i] ];
+                if( !warning || !warning.layerRef ) {
+                    failed++;
+                    continue;
+                }
+                var applied = false;
+                try {
+                    warning.layerRef.blendingMode = choice.mode;
+                    // Read the value back: assigning a mode this build does not accept
+                    // can silently do nothing, and reporting that as success would be a lie.
+                    applied = ( warning.layerRef.blendingMode === choice.mode );
+                } catch(eLayer) {
+                    applied = false;
+                }
+                if( applied ) {
+                    // The layer is no longer an unresolved warning, so drop the red flag.
+                    if( flagged && warning.originalLabel !== undefined ) {
+                        try { warning.layerRef.label = warning.originalLabel; } catch(eLabel) {}
+                    }
+                    warning.applied = choice.label;
+                    changed++;
+                } else {
+                    failed++;
+                }
+            }
+        } finally {
+            app.endUndoGroup();
+        }
+
+        RefreshDetail();
+        RefreshSummary();
+
+        if( changed > 0 ) {
+            alert( FormatMessage( Msg("UI::Report::FixDone", "%1 layer(s) set to %2."),
+                                  [ changed, choice.label ] ) );
+        }
+        if( failed > 0 ) {
+            alert( FormatMessage( Msg("UI::Report::FixFailed",
+                                      "%1 layer(s) could not be changed -- the import may have been undone."),
+                                  [ failed ] ) );
+        }
+    };
 
     // --- Actions ---
     var actionGroup = win.add("group");
@@ -2032,10 +2224,12 @@ function ShowWarningReport( iSettings ) {
     actionGroup.alignChildren = ["left", "center"];
     var btnSaveLog = actionGroup.add("button", undefined, Msg("UI::Report::SaveLog", "Save Log..."));
     btnSaveLog.preferredSize = [160, 26];
+    btnSaveLog.alignment = ["left", "center"];
     var spacer = actionGroup.add("group");
     spacer.alignment = ["fill", "fill"];
     var btnClose = actionGroup.add("button", undefined, Msg("UI::Report::Close", "Close"), {name:"ok"});
     btnClose.preferredSize = [110, 26];
+    btnClose.alignment = ["right", "center"];
 
     btnSaveLog.onClick = function() { SaveWarningLog( iSettings ); };
     btnClose.onClick   = function() { win.close(); };
@@ -2058,14 +2252,25 @@ function SaveWarningLog( iSettings ) {
     var target = suggested.saveDlg( Msg("UI::Report::SaveTitle", "Save Warning Log") );
     if( target === null ) return;
 
+    if( WriteWarningLog( target, iSettings ) ) {
+        alert( Msg("UI::Report::Saved", "Log saved:") + endl + target.fsName );
+    } else {
+        alert( Msg("UI::Report::SaveFailed", "Could not write the log file.") );
+    }
+}
+
+// Writes the collected warnings to iFile. Separate from the file picker above so the
+// output can be produced without a dialog. Returns true on success.
+function WriteWarningLog( iFile, iSettings ) {
+    var now       = new Date();
+    var target    = iFile;
     var groups    = GroupWarningsByMode( importWarnings );
     var shotCount = CountWarnedShots( importWarnings );
     var rule      = "--------------------------------------------------------------------------";
 
     target.encoding = "UTF-8";
     if( !target.open("w") ) {
-        alert( Msg("UI::Report::SaveFailed", "Could not write the log file.") );
-        return;
+        return false;
     }
 
     target.writeln( Msg("Log::Title", "TVPaint 12 -> After Effects : Import Warning Report") );
@@ -2106,7 +2311,7 @@ function SaveWarningLog( iSettings ) {
     }
 
     target.close();
-    alert( Msg("UI::Report::Saved", "Log saved:") + endl + target.fsName );
+    return true;
 }
 
 
