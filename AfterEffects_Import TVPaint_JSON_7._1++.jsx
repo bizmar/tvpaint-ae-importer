@@ -2461,61 +2461,59 @@ function WriteWarningLog( iFile, iSettings ) {
     var target    = iFile;
     var groups    = GroupWarningsByMode( importWarnings );
     var shotCount = CountWarnedShots( importWarnings );
-    var rule      = "--------------------------------------------------------------------------";
 
     target.encoding = "UTF-8";
     if( !target.open("w") ) {
         return false;
     }
 
-    target.writeln( Msg("Log::Title", "TVPaint 12 -> After Effects : Import Warning Report") );
-    target.writeln( rule );
-    target.writeln( Msg("Log::Generated", "Generated:") + " " + FormatDate( now ) );
-    target.writeln( "v." + scriptVersion_XX );
-    target.writeln( "" );
-    target.writeln( FormatMessage( Msg("UI::Report::Headline",
-                                       "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce."),
-                                   [ importWarnings.length, shotCount ] ) );
-    target.writeln( Msg("UI::Report::Intro",
-                        "The import completed. These layers were set to Normal -- review them before validation.") );
-    if( iSettings && iSettings.flagWarnings === true ) {
-        target.writeln( Msg("UI::Report::Flagged", "These layers have been given a Red label in their compositions.") );
-    }
-    target.writeln( "" );
-    target.writeln( Msg("UI::Report::GroupTitle", "Summary by blending mode:") );
-    target.writeln( rule );
-    for( var g = 0; g < groups.length; g++ ) {
-        target.writeln( "  " + FormatMessage( Msg("UI::Report::GroupLine", "%1  ->  %2   :   %3 layer(s) in %4 shot(s)"),
-                                              [ groups[g].requested, groups[g].applied,
-                                                groups[g].count, groups[g].shots.length ] ) );
-    }
-    target.writeln( "" );
-    target.writeln( Msg("UI::Report::Details", "Affected layers:") );
-    target.writeln( rule );
-
-    // Grouped by shot, so the log reads the way the project panel is organised.
-    var lastShot = null;
-    for( var i = 0; i < importWarnings.length; i++ ) {
-        var w = importWarnings[i];
-        if( w.shot !== lastShot ) {
-            if( lastShot !== null ) target.writeln( "" );
-            target.writeln( Msg("Log::Shot", "Shot:") + " " + w.shot + "   [" + w.comp + "]" );
-            lastShot = w.shot;
-        }
-        target.writeln( "    " + w.layer + "   " + w.requested + "  ->  " + w.applied );
-    }
+    // Deliberately terse: a header line, then only what has to be acted on.
+    // Failures come first -- those shots have to be imported again.
+    target.writeln( Msg("Log::Title", "TVPaint 12 -> After Effects : Import Report") );
+    target.writeln( Msg("Log::Generated", "Generated:") + " " + FormatDate( now )
+                  + "   (v." + scriptVersion_XX + ")" );
 
     if( importFileFailures.length > 0 ) {
+        var logFailShots = [];
+        for( var lf = 0; lf < importFileFailures.length; lf++ ) {
+            var seenL = false;
+            for( var lq = 0; lq < logFailShots.length; lq++ ) {
+                if( logFailShots[lq] === importFileFailures[lf].shot ) {
+                    seenL = true;
+                    break;
+                }
+            }
+            if( !seenL ) {
+                logFailShots.push( importFileFailures[lf].shot );
+            }
+        }
+
         target.writeln( "" );
-        target.writeln( Msg("UI::Report::FilesHeadline",
-                            "Layers skipped: their image files were not found.") );
-        target.writeln( rule );
+        target.writeln( FormatMessage( Msg("UI::Report::FilesAlert",
+                                           "!  %1 layer(s) in %2 shot(s) did NOT import. Those shots will need re-importing."),
+                                       [ importFileFailures.length, logFailShots.length ] ) );
         for( var ff = 0; ff < importFileFailures.length; ff++ ) {
             var fRec = importFileFailures[ff];
-            target.writeln( "  " + fRec.shot + " | " + fRec.comp + " | " + fRec.layer );
-            target.writeln( "      " + ( fRec.total > 0
-                            ? ( fRec.missing + " of " + fRec.total + " frames missing, first: " + fRec.first )
-                            : fRec.first ) );
+            target.writeln( "  " + fRec.shot + "  " + fRec.comp + "  " + fRec.layer
+                          + ( fRec.total > 0 ? ( "  " + fRec.missing + "/" + fRec.total ) : "" ) );
+            target.writeln( "      " + fRec.first );
+        }
+    }
+
+    if( importWarnings.length > 0 ) {
+        target.writeln( "" );
+        target.writeln( FormatMessage( Msg("UI::Report::Headline",
+                                           "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce."),
+                                       [ importWarnings.length, shotCount ] ) );
+        for( var g = 0; g < groups.length; g++ ) {
+            target.writeln( "  " + groups[g].requested + " -> " + groups[g].applied
+                          + "   " + groups[g].count );
+        }
+        target.writeln( "" );
+        for( var i = 0; i < importWarnings.length; i++ ) {
+            var w = importWarnings[i];
+            target.writeln( "  " + w.shot + "  " + w.comp + "  " + w.layer
+                          + "   " + w.requested + " -> " + w.applied );
         }
     }
 

@@ -52,7 +52,7 @@ Three levels, cheapest first:
 | Summary ↔ table consistency | **Pass** | Both rebuilt from the records after each Apply |
 | Original label restored | **Pass** | Labels read back as the pre-import values (8, 8, 13) |
 | BlendingMode constants | **Pass** | All 29 offered modes exist in 26.0x67 |
-| Log writer | **Untested** | `WriteWarningLog()` is split from the picker but not yet exercised |
+| Log writer | **Pass** | Generated via `WriteWarningLog()` with both finding types; failures first, 17 lines |
 | Save Log button | **Untested** | Opens a system save dialog; not driven |
 | Missing-file guard | **Pass** | 1340 + 1240 batch completed; 3 layers skipped and reported instead of throwing |
 | Batch survives a bad shot | **Pass** | Per-shot `try`/`catch` in `ExecuteImport` |
