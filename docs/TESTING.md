@@ -44,7 +44,8 @@ Three levels, cheapest first:
 | Placeholder substitution | **Pass** | Includes ja/zh reordering, repeats, missing arguments |
 | Report dialog renders | **Pass** | Correct columns, headers, rows; no clipping |
 | Dialog layout | **Pass** | Content-sized lists, pinned buttons, grouped headline |
-| Red-flag checkbox | **Pass** | Lives in the report (not the import panel); ticking it set all three warned layers to `label=1`, up from 8/8/13 |
+| Red-flag checkbox | **Pass** | Sits under the mode picker, unticked by default; ticking it set all three warned layers to `label=1` |
+| Unresolved-only rule | **Pass** | With the box ticked, reassigning one layer to Add returned it to `label=8` while the two still on Normal stayed `label=1` |
 | Progress window on failure | **Fixed** | A throwing shot left the `closeButton:false` palette stranded at "14/19", which looks like a hang; now closed in a `finally` |
 | Real multi-shot import | **Pass** | 3 shots / 31 layers / 528 frames → 3 warnings across 2 modes, completed in 261 s |
 | Reassigning a mode | **Pass** | Selected 2 rows, applied Overlay: table, summary and real layers all agree (read back as `OVERLAY` 5226); unselected layer untouched |

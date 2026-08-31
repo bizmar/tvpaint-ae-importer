@@ -375,7 +375,7 @@ message_fr["UI::Browser::ColStatus"] 		= "Statut JSON";
 message_fr["UI::Report::Title"] 			= "Rapport d'import";
 message_fr["UI::Report::Headline"] 			= "%1 calque(s) dans %2 plan(s) utilisent des modes de fusion qu'After Effects ne peut pas reproduire.";
 message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont été réglés sur Normal -- vérifiez-les avant validation.";
-message_fr["UI::Report::Flagged"] 			= "Attribuer une etiquette Rouge a ces calques dans leurs compositions";
+message_fr["UI::Report::Flagged"] 			= "Etiqueter en Rouge les calques non resolus (encore sur Normal)";
 message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint -- Signaler les calques concernes";
 message_fr["UI::Report::GroupTitle"] 		= "Récapitulatif par mode de fusion :";
 message_fr["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 calque(s) dans %4 plan(s)";
@@ -450,7 +450,7 @@ message_en["UI::Browser::ColStatus"] 		= "JSON Status";
 message_en["UI::Report::Title"] 			= "Import Report";
 message_en["UI::Report::Headline"] 			= "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce.";
 message_en["UI::Report::Intro"] 			= "The import completed. These layers were set to Normal -- review them before validation.";
-message_en["UI::Report::Flagged"] 			= "Give these layers a Red label in their compositions";
+message_en["UI::Report::Flagged"] 			= "Label unresolved layers Red (still set to Normal)";
 message_en["UI::Report::FlagUndo"] 			= "TVPaint Import -- Flag Affected Layers";
 message_en["UI::Report::GroupTitle"] 		= "Summary by blending mode:";
 message_en["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 layer(s) in %4 shot(s)";
@@ -525,7 +525,7 @@ message_ja["UI::Browser::ColStatus"] 		= "JSON 状態";
 message_ja["UI::Report::Title"] 			= "読み込みレポート";
 message_ja["UI::Report::Headline"] 			= "%2 個のショット内の %1 個のレイヤーで、After Effects では再現できない描画モードが使用されています。";
 message_ja["UI::Report::Intro"] 			= "読み込みは完了しました。これらのレイヤーは「通常」に設定されていますので、確認してください。";
-message_ja["UI::Report::Flagged"] 			= "これらのレイヤーに赤のラベルを付ける";
+message_ja["UI::Report::Flagged"] 			= "未解決のレイヤー (通常のまま) に赤のラベルを付ける";
 message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み -- 対象レイヤーにラベルを付ける";
 message_ja["UI::Report::GroupTitle"] 		= "描画モード別の集計:";
 message_ja["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 ショット / %3 レイヤー";
@@ -600,7 +600,7 @@ message_zh["UI::Browser::ColStatus"] 		= "JSON 状态";
 message_zh["UI::Report::Title"] 			= "导入报告";
 message_zh["UI::Report::Headline"] 			= "%2 个镜头中的 %1 个图层使用了 After Effects 无法还原的混合模式。";
 message_zh["UI::Report::Intro"] 			= "导入已完成。这些图层已设置为“正常”，请在交付前检查。";
-message_zh["UI::Report::Flagged"] 			= "为这些图层添加红色标签";
+message_zh["UI::Report::Flagged"] 			= "将未解决的图层 (仍为正常) 标为红色";
 message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入 -- 标记受影响的图层";
 message_zh["UI::Report::GroupTitle"] 		= "按混合模式汇总:";
 message_zh["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 个镜头 / %3 个图层";
@@ -2026,8 +2026,9 @@ function ShowWarningReport( iSettings ) {
     var groups    = GroupWarningsByMode( importWarnings );
     var shotCount = CountWarnedShots( importWarnings );
 
-    // Applies or lifts the red label on every warning that has not been resolved yet.
-    // Resolved layers keep the label they came in with.
+    // Marks ONLY the layers still sitting on the fallback mode. A layer whose mode has
+    // been reassigned is no longer a problem, so it gets the label it came in with
+    // back -- as does every layer when the option is switched off.
     function ApplyRedFlags( iOn ) {
         app.beginUndoGroup( Msg("UI::Report::FlagUndo", "TVPaint Import -- Flag Affected Layers") );
         try {
@@ -2078,16 +2079,6 @@ function ShowWarningReport( iSettings ) {
         {multiline: true});
     txtIntro.preferredSize = [640, 16];
 
-    // Offered here rather than in the import settings: by this point the user can see
-    // exactly which layers it would mark. Off by default -- the label it overwrites
-    // carries the TVPaint group colour.
-    var chkFlag = headPanel.add("checkbox", undefined,
-        Msg("UI::Report::Flagged", "Give these layers a Red label in their compositions"));
-    chkFlag.value = LoadBoolSetting("FlagWarnings", false);
-    chkFlag.onClick = function() {
-        SaveSetting("FlagWarnings", chkFlag.value);
-        ApplyRedFlags( chkFlag.value );
-    };
 
     // --- Summary grouped by blending mode ---
     win.add("statictext", undefined, Msg("UI::Report::GroupTitle", "Summary by blending mode:"));
@@ -2235,6 +2226,20 @@ function ShowWarningReport( iSettings ) {
                                       "%1 layer(s) could not be changed -- the import may have been undone."),
                                   [ failed ] ) );
         }
+    };
+
+    // Sits under the mode picker because it belongs to the same job: whatever is left
+    // unfixed can be marked for later. Off by default -- the label it overwrites
+    // carries the TVPaint group colour.
+    var flagGroup = win.add("group");
+    flagGroup.orientation = "row";
+    flagGroup.alignChildren = ["left", "center"];
+    var chkFlag = flagGroup.add("checkbox", undefined,
+        Msg("UI::Report::Flagged", "Label unresolved layers Red (still set to Normal)"));
+    chkFlag.value = LoadBoolSetting("FlagWarnings", false);
+    chkFlag.onClick = function() {
+        SaveSetting("FlagWarnings", chkFlag.value);
+        ApplyRedFlags( chkFlag.value );
     };
 
     // --- Actions ---
