@@ -19,6 +19,11 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 - **Batch Multi-Shot Import**: Automatically locates the matching `.json` inside each selected shot folder and batch-imports all shots sequentially with progress tracking.
 - **Smart Preferences Persistence**: Automatically saves and restores your last-used UI settings and root folder between After Effects sessions via `app.settings`.
 - **Automatic Comp Naming**: Automatically names compositions `Clip_<shotName>` (e.g. `Clip_shot_010`).
+- **Import Report instead of modal alerts**: Problems are collected during the run and shown once at the end, so a multi-shot batch never stops to wait for a click. Failed imports lead the report, followed by blending modes After Effects cannot reproduce.
+- **Fix blending modes in place**: The report's layer table is multi-select, with a blending-mode dropdown and Apply. Clicking a row in the summary selects every layer using that mode, so a whole mode can be corrected in one step.
+- **Missing frames no longer abort the batch**: A layer whose image files cannot be found is skipped and reported; the remaining shots still import.
+- **Optional red labels**: Failed shots' compositions and folders are marked red (on by default); unresolved layers can be marked too (off by default).
+- **Saveable log**: A terse, actionable text file listing the shots to re-import and every substituted blending mode.
 - **Native Sequence Mode by Default**: Defaults to native image sequences for faster imports and native AE caching.
 - **Headless / Automation Ready**: Decoupled core import function `$.global.ImportTVPaintJSON` for external batch scripts.
 
@@ -51,6 +56,34 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 2. Select your root shots directory. The path will be remembered for future sessions.
 3. Select one or multiple shot folders (`Shift+Click` for ranges, `Ctrl+Click` for individual shots).
 4. Click **"Import Selected Shots"** — all selected shots will be loaded and built automatically.
+
+---
+
+## Import Report
+
+Unsupported blending modes used to raise one modal alert per layer, which made a
+large batch impossible to leave unattended. They are now collected and presented
+once, when the run finishes.
+
+A real 33-shot import produced:
+
+```
+!  8 layer(s) in 5 shot(s) did NOT import. Those shots will need re-importing.
+  1340  Clip_1340  COL_sal_spodaj  28/28
+  1360  Clip_1360  COL_oce_srajca  2/3
+  ...
+
+42 layer(s) across 29 shot(s) use blending modes that After Effects cannot reproduce.
+  GrainMerge -> Normal   41
+  Light -> Normal   1
+```
+
+The window is resizable, so it stays usable at 100 shots.
+
+> [!NOTE]
+> A file that is *present but corrupt* is not detected: the check confirms every
+> frame exists, not that it is readable. After Effects imports such a file without
+> complaint. See [docs/TESTING.md](docs/TESTING.md) for what has been verified.
 
 ---
 

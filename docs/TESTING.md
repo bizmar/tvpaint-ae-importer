@@ -53,7 +53,7 @@ Three levels, cheapest first:
 | Original label restored | **Pass** | Labels read back as the pre-import values (8, 8, 13) |
 | BlendingMode constants | **Pass** | All 29 offered modes exist in 26.0x67 |
 | Log writer | **Pass** | Generated via `WriteWarningLog()` with both finding types; failures first, 17 lines |
-| Save Log button | **Untested** | Opens a system save dialog; not driven |
+| Save Log button | **Pass** | Full 33-shot run saved to disk by the user; UTF-8 shot names intact |
 | Missing-file guard | **Pass** | 1340 + 1240 batch completed; 3 layers skipped and reported instead of throwing |
 | Batch survives a bad shot | **Pass** | Per-shot `try`/`catch` in `ExecuteImport` |
 | Resizable report | **Pass** | `resizeable:true` + `alignment:["fill","fill"]`; dragging the window taller grew both tables |
@@ -65,6 +65,8 @@ Three levels, cheapest first:
 | Red label on failed shots | **Pass** | Shot 1420's folder and comp both set to label 1; healthy 1390 left at 2/15 |
 | Deleted frames, real material | **Pass** | 1420 (6 frames) skipped and reported; batch completed in 107 s |
 | Corrupt-but-present PNG | **Not detected** | 1390's `MASK_oce_brada/0080.png` has a broken header; AE imported it without error |
+| Full-folder import | **Pass** | 33 shots: 42 blending warnings in 29 shots, 8 layers failed in 5 shots, batch completed |
+| Partial frame gaps | **Pass** | Caught at `2/3`, `2/7`, `1/18` -- not just wholly-absent folders |
 | macOS | **Untested** | Windows only |
 
 ## Fixed: a missing image file used to abort the whole batch
