@@ -377,6 +377,8 @@ message_fr["UI::Report::Headline"] 			= "%1 calque(s) dans %2 plan(s) utilisent 
 message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont été réglés sur Normal -- vérifiez-les avant validation.";
 message_fr["UI::Report::Flagged"] 			= "Etiqueter en Rouge les calques non resolus (encore sur Normal)";
 message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint -- Signaler les calques concernes";
+message_fr["UI::Report::FilesHeadline"] 	= "%1 calque(s) dans %2 plan(s) ont ete ignores : leurs fichiers images sont introuvables.";
+message_fr["UI::Report::ColMissing"] 		= "Images manquantes";
 message_fr["UI::Report::GroupTitle"] 		= "Récapitulatif par mode de fusion :";
 message_fr["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 calque(s) dans %4 plan(s)";
 message_fr["UI::Report::ColShot"] 			= "Plan";
@@ -452,6 +454,8 @@ message_en["UI::Report::Headline"] 			= "%1 layer(s) across %2 shot(s) use blend
 message_en["UI::Report::Intro"] 			= "The import completed. These layers were set to Normal -- review them before validation.";
 message_en["UI::Report::Flagged"] 			= "Label unresolved layers Red (still set to Normal)";
 message_en["UI::Report::FlagUndo"] 			= "TVPaint Import -- Flag Affected Layers";
+message_en["UI::Report::FilesHeadline"] 	= "%1 layer(s) in %2 shot(s) were skipped: their image files were not found.";
+message_en["UI::Report::ColMissing"] 		= "Missing frames";
 message_en["UI::Report::GroupTitle"] 		= "Summary by blending mode:";
 message_en["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 layer(s) in %4 shot(s)";
 message_en["UI::Report::ColShot"] 			= "Shot";
@@ -527,6 +531,8 @@ message_ja["UI::Report::Headline"] 			= "%2 個のショット内の %1 個の�
 message_ja["UI::Report::Intro"] 			= "読み込みは完了しました。これらのレイヤーは「通常」に設定されていますので、確認してください。";
 message_ja["UI::Report::Flagged"] 			= "未解決のレイヤー (通常のまま) に赤のラベルを付ける";
 message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み -- 対象レイヤーにラベルを付ける";
+message_ja["UI::Report::FilesHeadline"] 	= "%2 個のショット内の %1 個のレイヤーをスキップしました: 画像ファイルが見つかりません。";
+message_ja["UI::Report::ColMissing"] 		= "見つからないファイル";
 message_ja["UI::Report::GroupTitle"] 		= "描画モード別の集計:";
 message_ja["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 ショット / %3 レイヤー";
 message_ja["UI::Report::ColShot"] 			= "ショット";
@@ -602,6 +608,8 @@ message_zh["UI::Report::Headline"] 			= "%2 个镜头中的 %1 个图层使用�
 message_zh["UI::Report::Intro"] 			= "导入已完成。这些图层已设置为“正常”，请在交付前检查。";
 message_zh["UI::Report::Flagged"] 			= "将未解决的图层 (仍为正常) 标为红色";
 message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入 -- 标记受影响的图层";
+message_zh["UI::Report::FilesHeadline"] 	= "已跳过 %2 个镜头中的 %1 个图层: 未找到其图像文件。";
+message_zh["UI::Report::ColMissing"] 		= "缺失的帧";
 message_zh["UI::Report::GroupTitle"] 		= "按混合模式汇总:";
 message_zh["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 个镜头 / %3 个图层";
 message_zh["UI::Report::ColShot"] 			= "镜头";
@@ -858,6 +866,22 @@ var importWarnings = [];
 
 function ResetImportWarnings() {
     importWarnings = [];
+    importFileFailures = [];
+}
+
+// Layers skipped because their frames could not be found on disk. Kept separate from
+// the blending warnings: nothing was converted, the layer simply is not there.
+var importFileFailures = [];
+
+function AddFileFailure( iShot, iComp, iLayer, iMissingCount, iTotalCount, iFirstMissing ) {
+    importFileFailures.push({
+        shot:    iShot,
+        comp:    iComp,
+        layer:   iLayer,
+        missing: iMissingCount,
+        total:   iTotalCount,
+        first:   iFirstMissing
+    });
 }
 
 function AddImportWarning( iShot, iComp, iLayer, iRequestedMode, iAppliedMode, iLayerRef, iOriginalLabel ) {
@@ -1621,6 +1645,31 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 		}
         
 		//////////////
+		// MISSING FILE GUARD
+		// ImportOptions.file throws on a path that does not resolve, and nothing above
+		// catches it, so one absent frame used to abort the whole batch. Check first and
+		// skip just this layer, recording it for the end-of-run report.
+		var missingCount = 0;
+		var firstMissing = "";
+		for( var m = 0; m < filesArray.length; m++ ) {
+			if( !(new File( filesArray[m] )).exists ) {
+				missingCount++;
+				if( firstMissing === "" ) {
+					firstMissing = filesArray[m];
+				}
+			}
+		}
+		if( missingCount > 0 ) {
+			AddFileFailure( dataFileName,
+							compName,
+							ReadStringFromData( currentLayerData, "name", "Undefined" ),
+							missingCount,
+							filesArray.length,
+							firstMissing );
+			continue;
+		}
+
+		//////////////
 		// FILE IMPORT
 		if( sequenceOn )
 		{
@@ -2021,7 +2070,7 @@ function RowsToPixels( iRows, iMin, iMax, iHasHeader ) {
 }
 
 function ShowWarningReport( iSettings ) {
-    if( importWarnings.length === 0 ) return;
+    if( importWarnings.length === 0 && importFileFailures.length === 0 ) return;
 
     var groups    = GroupWarningsByMode( importWarnings );
     var shotCount = CountWarnedShots( importWarnings );
@@ -2228,6 +2277,45 @@ function ShowWarningReport( iSettings ) {
         }
     };
 
+    // --- Layers skipped for missing frames ---
+    if( importFileFailures.length > 0 ) {
+        var failShots = [];
+        for( var fs = 0; fs < importFileFailures.length; fs++ ) {
+            var seenF = false;
+            for( var q = 0; q < failShots.length; q++ ) {
+                if( failShots[q] === importFileFailures[fs].shot ) { seenF = true; break; }
+            }
+            if( !seenF ) { failShots.push( importFileFailures[fs].shot ); }
+        }
+
+        var txtFiles = win.add("statictext", undefined,
+            FormatMessage( Msg("UI::Report::FilesHeadline",
+                               "%1 layer(s) in %2 shot(s) were skipped: their image files were not found."),
+                           [ importFileFailures.length, failShots.length ] ),
+            {multiline: true});
+        txtFiles.preferredSize = [660, 16];
+
+        var failList = win.add("listbox", undefined, [], {
+            numberOfColumns: 4,
+            showHeaders: true,
+            columnTitles: [ Msg("UI::Report::ColShot",    "Shot"),
+                            Msg("UI::Report::ColComp",    "Composition"),
+                            Msg("UI::Report::ColLayer",   "Layer"),
+                            Msg("UI::Report::ColMissing", "Missing frames") ],
+            columnWidths: [ 90, 150, 200, 210 ]
+        });
+        failList.preferredSize = [660, RowsToPixels( importFileFailures.length, 2, 8, true )];
+        for( var ff = 0; ff < importFileFailures.length; ff++ ) {
+            var fRec = importFileFailures[ff];
+            var fRow = failList.add("item", fRec.shot);
+            fRow.subItems[0].text = fRec.comp;
+            fRow.subItems[1].text = fRec.layer;
+            fRow.subItems[2].text = ( fRec.total > 0 )
+                                  ? ( fRec.missing + " / " + fRec.total + "   " + fRec.first )
+                                  : fRec.first;
+        }
+    }
+
     // Sits under the mode picker because it belongs to the same job: whatever is left
     // unfixed can be marked for later. Off by default -- the label it overwrites
     // carries the TVPaint group colour.
@@ -2338,6 +2426,20 @@ function WriteWarningLog( iFile, iSettings ) {
         target.writeln( "    " + w.layer + "   " + w.requested + "  ->  " + w.applied );
     }
 
+    if( importFileFailures.length > 0 ) {
+        target.writeln( "" );
+        target.writeln( Msg("UI::Report::FilesHeadline",
+                            "Layers skipped: their image files were not found.") );
+        target.writeln( rule );
+        for( var ff = 0; ff < importFileFailures.length; ff++ ) {
+            var fRec = importFileFailures[ff];
+            target.writeln( "  " + fRec.shot + " | " + fRec.comp + " | " + fRec.layer );
+            target.writeln( "      " + ( fRec.total > 0
+                            ? ( fRec.missing + " of " + fRec.total + " frames missing, first: " + fRec.first )
+                            : fRec.first ) );
+        }
+    }
+
     target.close();
     return true;
 }
@@ -2364,7 +2466,17 @@ function ExecuteImport(jsonFiles, settings) {
             var dataFile = jsonFiles[s];
             if (!dataFile.exists) continue;
 
-            ImportSingleTVPJson(dataFile, settings, s, totalShots);
+            // One bad shot should cost that shot, not every shot after it.
+            try {
+                ImportSingleTVPJson(dataFile, settings, s, totalShots);
+            } catch (eShot) {
+                AddFileFailure( dataFile.name.replace(/\.json$/i, ""),
+                                "--",
+                                "--",
+                                0,
+                                0,
+                                eShot.message );
+            }
         }
 
         progressBar.value = 100;
@@ -2376,7 +2488,7 @@ function ExecuteImport(jsonFiles, settings) {
         progressWindow.close();
     }
 
-    if( importWarnings.length > 0 ) {
+    if( importWarnings.length > 0 || importFileFailures.length > 0 ) {
         ShowWarningReport( settings );
     }
 }

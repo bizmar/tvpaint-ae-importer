@@ -54,9 +54,11 @@ Three levels, cheapest first:
 | BlendingMode constants | **Pass** | All 29 offered modes exist in 26.0x67 |
 | Log writer | **Untested** | `WriteWarningLog()` is split from the picker but not yet exercised |
 | Save Log button | **Untested** | Opens a system save dialog; not driven |
+| Missing-file guard | **Pass** | 1340 + 1240 batch completed; 3 layers skipped and reported instead of throwing |
+| Batch survives a bad shot | **Pass** | Per-shot `try`/`catch` in `ExecuteImport` |
 | macOS | **Untested** | Windows only |
 
-## Known defect: a missing image file aborts the whole batch
+## Fixed: a missing image file used to abort the whole batch
 
 Reproduced on shot `1340`:
 
@@ -76,8 +78,20 @@ shown, because the throw skipped the report entirely.
 four language tables and referenced nowhere — the original authors intended this
 guard and never wired it up.
 
-Planned fix: check the file before building `ImportOptions`, record a warning instead
-of throwing, skip the affected layer, and surface it in the same end-of-run report.
+**Fixed.** Every referenced frame is checked before any `ImportOptions` is built. A
+layer with missing frames is skipped and recorded, and the `ImportSingleTVPJson` call
+is additionally wrapped in `try`/`catch` so a shot that still throws costs that shot
+rather than every shot after it. The report gained a second section listing the
+skipped layers, which is also written to the saved log.
+
+Re-tested on `["1340", "1240"]` — 1340 is the shot that previously killed the run:
+
+| | before | after |
+|---|---|---|
+| Outcome | `RESULT: CRASHED` after 2.5 s | `RESULT: COMPLETED` after 149 s |
+| Shots imported | none completed | both |
+| Skipped layers | — | 3 in shot 1340, listed with `28 / 28` frames missing and the first missing path |
+| Blending warnings | never shown | 2 collected and reported |
 
 ### Why 1340's files are unreachable
 
@@ -95,7 +109,8 @@ UTF-8-aware tool fixes the data; no path handling in the script can recover it.
 
 ## Other unfixed issues
 
-- `Error::MissingData` (line 1358) aborts a shot mid-build and leaves a partial comp.
+- `Error::MissingData` (line 1358) still alerts and aborts a shot mid-build, leaving a
+  partial comp. The per-shot `try`/`catch` keeps the batch alive, but the modal remains.
 - Import speed: 528 frames took 261 s, so the full 33-shot folder would take ~45 min.
 
 ## Known gotchas when testing
