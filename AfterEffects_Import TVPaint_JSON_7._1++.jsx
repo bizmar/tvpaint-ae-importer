@@ -379,6 +379,8 @@ message_fr["UI::Report::Flagged"] 			= "Etiqueter en Rouge les calques non resol
 message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint -- Signaler les calques concernes";
 message_fr["UI::Report::FilesHeadline"] 	= "%1 calque(s) dans %2 plan(s) ont ete ignores : leurs fichiers images sont introuvables.";
 message_fr["UI::Report::ColMissing"] 		= "Images manquantes";
+message_fr["UI::Report::FilesTitle"] 		= "IMPORTS ECHOUES -- ces calques ne sont pas dans le projet";
+message_fr["UI::Report::FilesAlert"] 		= "!  %1 calque(s) dans %2 plan(s) n'ont PAS ete importes. Ces plans devront etre reimportes.";
 message_fr["UI::Report::GroupTitle"] 		= "Récapitulatif par mode de fusion :";
 message_fr["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 calque(s) dans %4 plan(s)";
 message_fr["UI::Report::ColShot"] 			= "Plan";
@@ -455,6 +457,8 @@ message_en["UI::Report::Flagged"] 			= "Label unresolved layers Red (still set t
 message_en["UI::Report::FlagUndo"] 			= "TVPaint Import -- Flag Affected Layers";
 message_en["UI::Report::FilesHeadline"] 	= "%1 layer(s) in %2 shot(s) were skipped: their image files were not found.";
 message_en["UI::Report::ColMissing"] 		= "Missing frames";
+message_en["UI::Report::FilesTitle"] 		= "FAILED IMPORTS -- these layers are not in the project";
+message_en["UI::Report::FilesAlert"] 		= "!  %1 layer(s) in %2 shot(s) did NOT import. Those shots will need re-importing.";
 message_en["UI::Report::GroupTitle"] 		= "Summary by blending mode:";
 message_en["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 layer(s) in %4 shot(s)";
 message_en["UI::Report::ColShot"] 			= "Shot";
@@ -531,6 +535,8 @@ message_ja["UI::Report::Flagged"] 			= "未解決のレイヤー (通常のま�
 message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み -- 対象レイヤーにラベルを付ける";
 message_ja["UI::Report::FilesHeadline"] 	= "%2 個のショット内の %1 個のレイヤーをスキップしました: 画像ファイルが見つかりません。";
 message_ja["UI::Report::ColMissing"] 		= "見つからないファイル";
+message_ja["UI::Report::FilesTitle"] 		= "読み込み失敗 -- これらのレイヤーはプロジェクトにありません";
+message_ja["UI::Report::FilesAlert"] 		= "!  %2 個のショット内の %1 個のレイヤーが読み込まれませんでした。これらのショットは再読み込みが必要です。";
 message_ja["UI::Report::GroupTitle"] 		= "描画モード別の集計:";
 message_ja["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 ショット / %3 レイヤー";
 message_ja["UI::Report::ColShot"] 			= "ショット";
@@ -607,6 +613,8 @@ message_zh["UI::Report::Flagged"] 			= "将未解决的图层 (仍为正常) 标
 message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入 -- 标记受影响的图层";
 message_zh["UI::Report::FilesHeadline"] 	= "已跳过 %2 个镜头中的 %1 个图层: 未找到其图像文件。";
 message_zh["UI::Report::ColMissing"] 		= "缺失的帧";
+message_zh["UI::Report::FilesTitle"] 		= "导入失败 -- 这些图层不在项目中";
+message_zh["UI::Report::FilesAlert"] 		= "!  %2 个镜头中的 %1 个图层未能导入。这些镜头需要重新导入。";
 message_zh["UI::Report::GroupTitle"] 		= "按混合模式汇总:";
 message_zh["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 个镜头 / %3 个图层";
 message_zh["UI::Report::ColShot"] 			= "镜头";
@@ -2071,6 +2079,22 @@ function ShowWarningReport( iSettings ) {
     var groups    = GroupWarningsByMode( importWarnings );
     var shotCount = CountWarnedShots( importWarnings );
 
+    // Distinct shots that lost layers entirely. Needed by the header as well as by
+    // the section further down, so it is worked out once here.
+    var failShots = [];
+    for( var fs = 0; fs < importFileFailures.length; fs++ ) {
+        var seenF = false;
+        for( var q = 0; q < failShots.length; q++ ) {
+            if( failShots[q] === importFileFailures[fs].shot ) {
+                seenF = true;
+                break;
+            }
+        }
+        if( !seenF ) {
+            failShots.push( importFileFailures[fs].shot );
+        }
+    }
+
     // Marks ONLY the layers still sitting on the fallback mode. A layer whose mode has
     // been reassigned is no longer a problem, so it gets the label it came in with
     // back -- as does every layer when the option is switched off.
@@ -2126,6 +2150,23 @@ function ShowWarningReport( iSettings ) {
         Msg("UI::Report::Intro", "The import completed. These layers were set to Normal -- review them before validation."),
         {multiline: true});
     txtIntro.preferredSize = [640, 16];
+
+    // A failed import is a different order of problem from a substituted blending
+    // mode -- the artwork is simply not in the project -- so it is called out in the
+    // header rather than only in the section below.
+    if( importFileFailures.length > 0 ) {
+        var txtAlert = headPanel.add("statictext", undefined,
+            FormatMessage( Msg("UI::Report::FilesAlert",
+                               "!  %1 layer(s) in %2 shot(s) did NOT import. Those shots will need re-importing."),
+                           [ importFileFailures.length, failShots.length ] ),
+            {multiline: true});
+        txtAlert.preferredSize = [640, 18];
+        try {
+            var gfx = txtAlert.graphics;
+            gfx.foregroundColor = gfx.newPen( gfx.PenType.SOLID_COLOR, [0.95, 0.45, 0.25, 1], 1 );
+            gfx.font = ScriptUI.newFont( gfx.font.name, ScriptUI.FontStyle.BOLD, gfx.font.size );
+        } catch(eAlert) {}
+    }
 
 
     // --- Summary grouped by blending mode ---
@@ -2293,34 +2334,33 @@ function ShowWarningReport( iSettings ) {
         ApplyRedFlags( chkFlag.value );
     };
 
-    // --- Layers skipped for missing frames ---
+    // --- Failed imports: separate, and framed, because these layers are simply absent ---
     if( importFileFailures.length > 0 ) {
-        var failShots = [];
-        for( var fs = 0; fs < importFileFailures.length; fs++ ) {
-            var seenF = false;
-            for( var q = 0; q < failShots.length; q++ ) {
-                if( failShots[q] === importFileFailures[fs].shot ) { seenF = true; break; }
-            }
-            if( !seenF ) { failShots.push( importFileFailures[fs].shot ); }
-        }
+        var failPanel = win.add("panel", undefined,
+            Msg("UI::Report::FilesTitle", "FAILED IMPORTS -- these layers are not in the project"));
+        failPanel.orientation = "column";
+        failPanel.alignChildren = ["fill", "top"];
+        failPanel.margins = 10;
+        failPanel.spacing = 6;
+        failPanel.alignment = ["fill", "fill"];
 
-        var txtFiles = win.add("statictext", undefined,
+        var txtFiles = failPanel.add("statictext", undefined,
             FormatMessage( Msg("UI::Report::FilesHeadline",
                                "%1 layer(s) in %2 shot(s) were skipped: their image files were not found."),
                            [ importFileFailures.length, failShots.length ] ),
             {multiline: true});
-        txtFiles.preferredSize = [660, 16];
+        txtFiles.preferredSize = [630, 16];
 
-        var failList = win.add("listbox", undefined, [], {
+        var failList = failPanel.add("listbox", undefined, [], {
             numberOfColumns: 4,
             showHeaders: true,
             columnTitles: [ Msg("UI::Report::ColShot",    "Shot"),
                             Msg("UI::Report::ColComp",    "Composition"),
                             Msg("UI::Report::ColLayer",   "Layer"),
                             Msg("UI::Report::ColMissing", "Missing frames") ],
-            columnWidths: [ 90, 150, 200, 210 ]
+            columnWidths: [ 90, 150, 190, 200 ]
         });
-        failList.preferredSize = [660, RowsToPixels( importFileFailures.length, 2, 8, true )];
+        failList.preferredSize = [630, RowsToPixels( importFileFailures.length, 3, 10, true )];
         failList.minimumSize = [400, RowsToPixels( 2, 2, 2, true )];
         failList.alignment = ["fill", "fill"];
         for( var ff = 0; ff < importFileFailures.length; ff++ ) {
@@ -2344,7 +2384,7 @@ function ShowWarningReport( iSettings ) {
     var spacer = actionGroup.add("group");
     spacer.alignment = ["fill", "fill"];
     var btnClose = actionGroup.add("button", undefined, Msg("UI::Report::Close", "Close"), {name:"ok"});
-    btnClose.preferredSize = [110, 26];
+    btnClose.preferredSize = [264, 30];	// ~40% of the 660px content width
     btnClose.alignment = ["right", "center"];
 
     btnSaveLog.onClick = function() { SaveWarningLog( iSettings ); };

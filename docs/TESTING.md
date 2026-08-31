@@ -61,6 +61,7 @@ Three levels, cheapest first:
 | Missing frames | **Pass** | Synthetic `B_missing_files`: the one stripped layer skipped, the rest imported |
 | Malformed JSON | **Pass** | Synthetic `C_malformed`: parse error caught per-shot, reported as `Expected: }` |
 | Batch after 3 bad shots | **Pass** | `E_good` imported normally at the end of the run |
+| Failed-import severity | **Pass** | Header alert renders orange-red, failed section framed in a titled panel, Close widened to ~40% |
 | macOS | **Untested** | Windows only |
 
 ## Fixed: a missing image file used to abort the whole batch
@@ -129,5 +130,8 @@ UTF-8-aware tool fixes the data; no path handling in the script can recover it.
   Clicking the After Effects window clears it.
 - Writing files from a script requires **Preferences ▸ Scripting & Expressions ▸
   Allow Scripts to Write Files and Access Network**.
+- `graphics.foregroundColor` works for colouring statictext in this build, but
+  `ScriptUI.newFont(..., BOLD, ...)` appears to be ignored — do not rely on weight
+  alone to carry emphasis.
 - Backgrounding a shell `&&` chain hides errors from the earlier steps; run the
   preparation in the foreground and launch After Effects separately.
