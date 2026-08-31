@@ -392,7 +392,6 @@ message_fr["UI::Report::Close"] 			= "Fermer";
 message_fr["UI::Report::SaveTitle"] 		= "Enregistrer le rapport d'avertissements";
 message_fr["UI::Report::Saved"] 			= "Rapport enregistré :";
 message_fr["UI::Report::SaveFailed"] 		= "Impossible d'écrire le fichier de rapport.";
-message_fr["UI::Label::FlagWarnings"] 		= "Signaler les calques concernés (Rouge)";
 message_fr["Blending::Normal"] 				= "Normal";
 message_fr["Log::Title"] 					= "TVPaint 12 -> After Effects : rapport d'avertissements d'import";
 message_fr["Log::Generated"] 				= "Généré le :";
@@ -469,7 +468,6 @@ message_en["UI::Report::Close"] 			= "Close";
 message_en["UI::Report::SaveTitle"] 		= "Save Warning Log";
 message_en["UI::Report::Saved"] 			= "Log saved:";
 message_en["UI::Report::SaveFailed"] 		= "Could not write the log file.";
-message_en["UI::Label::FlagWarnings"] 		= "Flag Affected Layers (Red)";
 message_en["Blending::Normal"] 				= "Normal";
 message_en["Log::Title"] 					= "TVPaint 12 -> After Effects : Import Warning Report";
 message_en["Log::Generated"] 				= "Generated:";
@@ -546,7 +544,6 @@ message_ja["UI::Report::Close"] 			= "閉じる";
 message_ja["UI::Report::SaveTitle"] 		= "警告ログを保存";
 message_ja["UI::Report::Saved"] 			= "ログを保存しました:";
 message_ja["UI::Report::SaveFailed"] 		= "ログファイルを書き込めませんでした。";
-message_ja["UI::Label::FlagWarnings"] 		= "対象レイヤーにラベルを付ける (赤)";
 message_ja["Blending::Normal"] 				= "通常";
 message_ja["Log::Title"] 					= "TVPaint 12 -> After Effects : 読み込み警告レポート";
 message_ja["Log::Generated"] 				= "生成日時:";
@@ -623,7 +620,6 @@ message_zh["UI::Report::Close"] 			= "关闭";
 message_zh["UI::Report::SaveTitle"] 		= "保存警告日志";
 message_zh["UI::Report::Saved"] 			= "日志已保存:";
 message_zh["UI::Report::SaveFailed"] 		= "无法写入日志文件。";
-message_zh["UI::Label::FlagWarnings"] 		= "标记受影响的图层 (红色)";
 message_zh["Blending::Normal"] 				= "正常";
 message_zh["Log::Title"] 					= "TVPaint 12 -> After Effects : 导入警告报告";
 message_zh["Log::Generated"] 				= "生成时间:";
@@ -2097,7 +2093,10 @@ function ShowWarningReport( iSettings ) {
         }
     }
 
-    var win = new Window("dialog", Msg("UI::Report::Title", "Import Report") + " -- v." + scriptVersion_XX);
+    // Resizeable: a 100-shot import can produce hundreds of rows, and a fixed height
+    // would make the table a letterbox. The detail list absorbs any extra height.
+    var win = new Window("dialog", Msg("UI::Report::Title", "Import Report") + " -- v." + scriptVersion_XX,
+                         undefined, {resizeable: true});
     win.orientation = "column";
     win.alignChildren = ["fill", "top"];
     win.spacing = 8;
@@ -2133,6 +2132,7 @@ function ShowWarningReport( iSettings ) {
     win.add("statictext", undefined, Msg("UI::Report::GroupTitle", "Summary by blending mode:"));
     var summaryList = win.add("listbox", undefined, []);
     summaryList.preferredSize = [660, RowsToPixels( groups.length, 1, 6, false )];
+    summaryList.alignment = ["fill", "top"];
 
     // Regrouped from the live warning records, so reassigning a mode is reflected here
     // instead of leaving the summary contradicting the table below it.
@@ -2161,7 +2161,9 @@ function ShowWarningReport( iSettings ) {
                         Msg("UI::Report::ColApplied", "Applied in AE") ],
         columnWidths: [ 90, 150, 160, 140, 110 ]
     });
-    detailList.preferredSize = [660, RowsToPixels( importWarnings.length, 4, 14, true )];
+    detailList.preferredSize = [660, RowsToPixels( importWarnings.length, 6, 18, true )];
+    detailList.minimumSize = [400, RowsToPixels( 4, 4, 4, true )];
+    detailList.alignment = ["fill", "fill"];	// takes the slack when the window grows
 
     // Rebuilt from the warning records rather than by poking individual cells, so the
     // table cannot drift out of step with the data after a mode is reassigned.
@@ -2305,6 +2307,8 @@ function ShowWarningReport( iSettings ) {
             columnWidths: [ 90, 150, 200, 210 ]
         });
         failList.preferredSize = [660, RowsToPixels( importFileFailures.length, 2, 8, true )];
+        failList.minimumSize = [400, RowsToPixels( 2, 2, 2, true )];
+        failList.alignment = ["fill", "fill"];
         for( var ff = 0; ff < importFileFailures.length; ff++ ) {
             var fRec = importFileFailures[ff];
             var fRow = failList.add("item", fRec.shot);
@@ -2345,6 +2349,12 @@ function ShowWarningReport( iSettings ) {
 
     btnSaveLog.onClick = function() { SaveWarningLog( iSettings ); };
     btnClose.onClick   = function() { win.close(); };
+
+    // Re-run the layout on every drag so the tables follow the window.
+    win.onResizing = win.onResize = function() {
+        try { this.layout.resize(); } catch(eResize) {}
+    };
+    win.minimumSize = [560, 420];
 
     if( chkFlag.value ) {
         ApplyRedFlags( true );

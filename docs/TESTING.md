@@ -56,6 +56,11 @@ Three levels, cheapest first:
 | Save Log button | **Untested** | Opens a system save dialog; not driven |
 | Missing-file guard | **Pass** | 1340 + 1240 batch completed; 3 layers skipped and reported instead of throwing |
 | Batch survives a bad shot | **Pass** | Per-shot `try`/`catch` in `ExecuteImport` |
+| Resizable report | **Pass** | `resizeable:true` + `alignment:["fill","fill"]`; dragging the window taller grew both tables |
+| Missing folders | **Pass** | Synthetic `A_no_folders`: 5 layers skipped and listed, batch continued |
+| Missing frames | **Pass** | Synthetic `B_missing_files`: the one stripped layer skipped, the rest imported |
+| Malformed JSON | **Pass** | Synthetic `C_malformed`: parse error caught per-shot, reported as `Expected: }` |
+| Batch after 3 bad shots | **Pass** | `E_good` imported normally at the end of the run |
 | macOS | **Untested** | Windows only |
 
 ## Fixed: a missing image file used to abort the whole batch
