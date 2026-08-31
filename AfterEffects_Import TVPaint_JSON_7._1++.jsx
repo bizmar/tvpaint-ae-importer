@@ -2279,6 +2279,20 @@ function ShowWarningReport( iSettings ) {
         }
     };
 
+    // Sits under the mode picker because it belongs to the same job: whatever is left
+    // unfixed can be marked for later. Off by default -- the label it overwrites
+    // carries the TVPaint group colour.
+    var flagGroup = win.add("group");
+    flagGroup.orientation = "row";
+    flagGroup.alignChildren = ["left", "center"];
+    var chkFlag = flagGroup.add("checkbox", undefined,
+        Msg("UI::Report::Flagged", "Label unresolved layers Red (still set to Normal)"));
+    chkFlag.value = LoadBoolSetting("FlagWarnings", false);
+    chkFlag.onClick = function() {
+        SaveSetting("FlagWarnings", chkFlag.value);
+        ApplyRedFlags( chkFlag.value );
+    };
+
     // --- Layers skipped for missing frames ---
     if( importFileFailures.length > 0 ) {
         var failShots = [];
@@ -2319,20 +2333,6 @@ function ShowWarningReport( iSettings ) {
                                   : fRec.first;
         }
     }
-
-    // Sits under the mode picker because it belongs to the same job: whatever is left
-    // unfixed can be marked for later. Off by default -- the label it overwrites
-    // carries the TVPaint group colour.
-    var flagGroup = win.add("group");
-    flagGroup.orientation = "row";
-    flagGroup.alignChildren = ["left", "center"];
-    var chkFlag = flagGroup.add("checkbox", undefined,
-        Msg("UI::Report::Flagged", "Label unresolved layers Red (still set to Normal)"));
-    chkFlag.value = LoadBoolSetting("FlagWarnings", false);
-    chkFlag.onClick = function() {
-        SaveSetting("FlagWarnings", chkFlag.value);
-        ApplyRedFlags( chkFlag.value );
-    };
 
     // --- Actions ---
     var actionGroup = win.add("group");

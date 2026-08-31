@@ -114,8 +114,11 @@ UTF-8-aware tool fixes the data; no path handling in the script can recover it.
 
 ## Other unfixed issues
 
-- `Error::MissingData` (line 1358) still alerts and aborts a shot mid-build, leaving a
-  partial comp. The per-shot `try`/`catch` keeps the batch alive, but the modal remains.
+- `Error::MissingData` still alerts and aborts a shot, at line 1303 (missing
+  `project.clip.layers`) and line 1358 (a layer with no `link` array). Confirmed on the
+  synthetic `D_no_layers` shot: the modal fired mid-batch and had to be dismissed by
+  hand. The per-shot `try`/`catch` keeps the run alive, but this is the last blocking
+  dialog, and it should fold into the report the same way the file failures did.
 - Import speed: 528 frames took 261 s, so the full 33-shot folder would take ~45 min.
 
 ## Known gotchas when testing
