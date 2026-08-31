@@ -15,17 +15,24 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 
 ## Features & Improvements
 
-- **Interactive Shot Browser**: Dedicated in-app browser listing all shot folders with **Date Modified** timestamps, real-time name filtering, and multi-selection (`Shift+Click` / `Ctrl+Click`).
-- **Batch Multi-Shot Import**: Automatically locates the matching `.json` inside each selected shot folder and batch-imports all shots sequentially with progress tracking.
-- **Smart Preferences Persistence**: Automatically saves and restores your last-used UI settings and root folder between After Effects sessions via `app.settings`.
-- **Automatic Comp Naming**: Automatically names compositions `Clip_<shotName>` (e.g. `Clip_shot_010`).
-- **Import Report instead of modal alerts**: Problems are collected during the run and shown once at the end, so a multi-shot batch never stops to wait for a click. Failed imports lead the report, followed by blending modes After Effects cannot reproduce.
-- **Fix blending modes in place**: The report's layer table is multi-select, with a blending-mode dropdown and Apply. Clicking a row in the summary selects every layer using that mode, so a whole mode can be corrected in one step.
-- **Missing frames no longer abort the batch**: A layer whose image files cannot be found is skipped and reported; the remaining shots still import.
-- **Optional red labels**: Failed shots' compositions and folders are marked red (on by default); unresolved layers can be marked too (off by default).
-- **Saveable log**: A terse, actionable text file listing the shots to re-import and every substituted blending mode.
-- **Native Sequence Mode by Default**: Defaults to native image sequences for faster imports and native AE caching.
-- **Headless / Automation Ready**: Decoupled core import function `$.global.ImportTVPaintJSON` for external batch scripts.
+### Batch importing
+- **Interactive Shot Browser** — browse shot folders with Date Modified, filter by name, multi-select with `Shift`/`Ctrl`.
+- **Multi-shot import** — finds the matching `.json` in each selected folder and imports them in sequence, with progress.
+- **Automatic comp naming** — `Clip_<shotName>`.
+- **Settings persistence** — UI options and root folder are remembered between sessions.
+
+### Import Report
+- **No modal interruptions** — problems are collected during the run and shown once at the end, so a large batch can be left alone.
+- **Failed imports first** — layers whose frames are missing are skipped, listed, and flagged; the rest of the batch still imports.
+- **Fix blending modes in place** — select layers, pick a mode, apply. Clicking a summary row selects every layer using that mode.
+- **Red labels** — failed shots' comps and folders (on by default); unresolved layers (off by default).
+- **Saveable log** — a short text file listing what to re-import and what was substituted.
+- **Resizable** — stays readable at 100 shots.
+
+### Under the hood
+- **Native sequences by default** — faster imports and native AE caching.
+- **Headless API** — `$.global.ImportTVPaintJSON` for external batch scripts.
+- **Four languages** — English, French, Japanese, Chinese.
 
 ---
 
@@ -60,6 +67,8 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 ---
 
 ## Import Report
+
+<img src="docs/ImportReportExample.png" width="620" alt="Import Report" />
 
 Unsupported blending modes used to raise one modal alert per layer, which made a
 large batch impossible to leave unattended. They are now collected and presented
