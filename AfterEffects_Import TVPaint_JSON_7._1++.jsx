@@ -375,7 +375,8 @@ message_fr["UI::Browser::ColStatus"] 		= "Statut JSON";
 message_fr["UI::Report::Title"] 			= "Rapport d'import";
 message_fr["UI::Report::Headline"] 			= "%1 calque(s) dans %2 plan(s) utilisent des modes de fusion qu'After Effects ne peut pas reproduire.";
 message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont été réglés sur Normal -- vérifiez-les avant validation.";
-message_fr["UI::Report::Flagged"] 			= "Ces calques ont reçu une étiquette Rouge dans leurs compositions.";
+message_fr["UI::Report::Flagged"] 			= "Attribuer une etiquette Rouge a ces calques dans leurs compositions";
+message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint -- Signaler les calques concernes";
 message_fr["UI::Report::GroupTitle"] 		= "Récapitulatif par mode de fusion :";
 message_fr["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 calque(s) dans %4 plan(s)";
 message_fr["UI::Report::ColShot"] 			= "Plan";
@@ -449,7 +450,8 @@ message_en["UI::Browser::ColStatus"] 		= "JSON Status";
 message_en["UI::Report::Title"] 			= "Import Report";
 message_en["UI::Report::Headline"] 			= "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce.";
 message_en["UI::Report::Intro"] 			= "The import completed. These layers were set to Normal -- review them before validation.";
-message_en["UI::Report::Flagged"] 			= "These layers have been given a Red label in their compositions.";
+message_en["UI::Report::Flagged"] 			= "Give these layers a Red label in their compositions";
+message_en["UI::Report::FlagUndo"] 			= "TVPaint Import -- Flag Affected Layers";
 message_en["UI::Report::GroupTitle"] 		= "Summary by blending mode:";
 message_en["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %3 layer(s) in %4 shot(s)";
 message_en["UI::Report::ColShot"] 			= "Shot";
@@ -523,7 +525,8 @@ message_ja["UI::Browser::ColStatus"] 		= "JSON 状態";
 message_ja["UI::Report::Title"] 			= "読み込みレポート";
 message_ja["UI::Report::Headline"] 			= "%2 個のショット内の %1 個のレイヤーで、After Effects では再現できない描画モードが使用されています。";
 message_ja["UI::Report::Intro"] 			= "読み込みは完了しました。これらのレイヤーは「通常」に設定されていますので、確認してください。";
-message_ja["UI::Report::Flagged"] 			= "これらのレイヤーには、各コンポジション内で赤のラベルが設定されました。";
+message_ja["UI::Report::Flagged"] 			= "これらのレイヤーに赤のラベルを付ける";
+message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み -- 対象レイヤーにラベルを付ける";
 message_ja["UI::Report::GroupTitle"] 		= "描画モード別の集計:";
 message_ja["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 ショット / %3 レイヤー";
 message_ja["UI::Report::ColShot"] 			= "ショット";
@@ -597,7 +600,8 @@ message_zh["UI::Browser::ColStatus"] 		= "JSON 状态";
 message_zh["UI::Report::Title"] 			= "导入报告";
 message_zh["UI::Report::Headline"] 			= "%2 个镜头中的 %1 个图层使用了 After Effects 无法还原的混合模式。";
 message_zh["UI::Report::Intro"] 			= "导入已完成。这些图层已设置为“正常”，请在交付前检查。";
-message_zh["UI::Report::Flagged"] 			= "这些图层已在各自的合成中标记为红色标签。";
+message_zh["UI::Report::Flagged"] 			= "为这些图层添加红色标签";
+message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入 -- 标记受影响的图层";
 message_zh["UI::Report::GroupTitle"] 		= "按混合模式汇总:";
 message_zh["UI::Report::GroupLine"] 		= "%1  ->  %2   :   %4 个镜头 / %3 个图层";
 message_zh["UI::Report::ColShot"] 			= "镜头";
@@ -1228,7 +1232,7 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // GUI Panel
-var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:440});
+var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:400});
 var staticTextInfo 				= importPanel.add( "statictext", 	{x:25,  y:10,  width:400, height:25}, 	message[lang]["UI::Label::Info"]			);
 var buttonBrowse 				= importPanel.add( "button", 		{x:25,  y:45,  width:400, height:26}, 	message[lang]["UI::Label::Browse"]			);
 var staticTextSettingsTitle 	= importPanel.add( "statictext", 	{x:25,  y:80,  width:200, height:20}, 	message[lang]["UI::Label::Settings"]		);
@@ -1247,7 +1251,6 @@ var staticTextSeqSorting 		= importPanel.add( "statictext", 	{x:25, y:315, width
 var ddListArraySeqSorting 		= new Array( 	message[lang]["UI::Label::Sequence::Index"], 
 												message[lang]["UI::Label::Sequence::Name"] );
 var dropdownlistSeqSorting 		= importPanel.add( "dropdownlist", 	{x:25, y:345, width:300, height:20}, 	ddListArraySeqSorting );
-var checkboxFlagWarnings 		= importPanel.add( "checkbox", 		{x:25, y:385, width:400, height:20}, 	message[lang]["UI::Label::FlagWarnings"]	);
 
 // Restore persisted settings with Native Sequence (1) as default
 var savedSeqImportMode 			= LoadIntSetting("SeqImportMode", 1);
@@ -1267,7 +1270,6 @@ if (savedCamMode === 2) {
 }
 
 checkboxLayerColors.value 		= LoadBoolSetting("LayerColors", true);
-checkboxFlagWarnings.value 		= LoadBoolSetting("FlagWarnings", false);
 checkboxPrePostBehaviours.value = LoadBoolSetting("PrePostBehaviours", true);
 checkboxTimeRemap.value 		= LoadBoolSetting("TimeRemap", true);
 checkboxBlendingModes.value 	= LoadBoolSetting("BlendingModes", true);
@@ -1286,7 +1288,6 @@ function SaveAllSettings() {
     SaveSetting("ImportCamera", checkboxImportCamera.value);
     SaveSetting("CameraMode", radioCameraRaw.value ? 2 : 1);
     SaveSetting("LayerColors", checkboxLayerColors.value);
-    SaveSetting("FlagWarnings", checkboxFlagWarnings.value);
     SaveSetting("PrePostBehaviours", checkboxPrePostBehaviours.value);
     SaveSetting("TimeRemap", checkboxTimeRemap.value);
     SaveSetting("BlendingModes", checkboxBlendingModes.value);
@@ -1300,7 +1301,6 @@ function GetCurrentSettings() {
     return {
         mode: scriptMode,
         layerColors: checkboxLayerColors.value,
-        flagWarnings: checkboxFlagWarnings.value,
         prepostBehav: checkboxPrePostBehaviours.value,
         sortingMode: dropdownlistSeqSorting.selection ? dropdownlistSeqSorting.selection.index : 0,
         blending: checkboxBlendingModes.value,
@@ -1329,7 +1329,6 @@ checkboxTimeRemap.onClick = function() {
 };
 
 checkboxLayerColors.onClick = function() { SaveAllSettings(); };
-checkboxFlagWarnings.onClick = function() { SaveAllSettings(); };
 checkboxBlendingModes.onClick = function() { SaveAllSettings(); };
 checkboxPrePostBehaviours.onClick = function() { SaveAllSettings(); };
 dropdownlistSeqImport.onChange = function() { SaveAllSettings(); };
@@ -1465,7 +1464,6 @@ function IsInvalid( iObject, iError ) {
 function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 	var mode 		= settings.mode;
 	var colorOn 	= settings.layerColors;
-	var flagWarnOn 	= (settings.flagWarnings === true);
 	var prepostOn 	= settings.prepostBehav;
 	var sortMode 	= settings.sortingMode;
 	var blendingOn 	= settings.blending;
@@ -1726,17 +1724,15 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 				// A layer with no "blending-mode" entry at all is not an anomaly -- Normal
 				// is the correct result -- so only a named, unconvertible mode is reported.
 				if( currentBlendingMode !== "" ) {
-					var previousLabel = layer.label;
+					// The label is recorded, not changed: flagging is offered in the
+					// report at the end of the run, where the user can see what it affects.
 					AddImportWarning( 	dataFileName,
 										compName,
 										ReadStringFromData( currentLayerData, "name", "Undefined" ),
 										currentBlendingMode,
 										Msg( "Blending::Normal", "Normal" ),
 										layer,
-										previousLabel );
-					if( flagWarnOn ) {
-						layer.label = 1;	// 1 = Red, per the colorLabels table above.
-					}
+										layer.label );
 				}
 			}
 		}
@@ -2029,7 +2025,27 @@ function ShowWarningReport( iSettings ) {
 
     var groups    = GroupWarningsByMode( importWarnings );
     var shotCount = CountWarnedShots( importWarnings );
-    var flagged   = ( iSettings && iSettings.flagWarnings === true );
+
+    // Applies or lifts the red label on every warning that has not been resolved yet.
+    // Resolved layers keep the label they came in with.
+    function ApplyRedFlags( iOn ) {
+        app.beginUndoGroup( Msg("UI::Report::FlagUndo", "TVPaint Import -- Flag Affected Layers") );
+        try {
+            for( var i = 0; i < importWarnings.length; i++ ) {
+                var wRec = importWarnings[i];
+                if( !wRec.layerRef ) continue;
+                try {
+                    if( iOn && !wRec.resolved ) {
+                        wRec.layerRef.label = 1;	// 1 = Red, per the colorLabels table.
+                    } else if( wRec.originalLabel !== undefined ) {
+                        wRec.layerRef.label = wRec.originalLabel;
+                    }
+                } catch(eLabel) {}
+            }
+        } finally {
+            app.endUndoGroup();
+        }
+    }
 
     var win = new Window("dialog", Msg("UI::Report::Title", "Import Report") + " -- v." + scriptVersion_XX);
     win.orientation = "column";
@@ -2062,12 +2078,16 @@ function ShowWarningReport( iSettings ) {
         {multiline: true});
     txtIntro.preferredSize = [640, 16];
 
-    if( flagged ) {
-        var txtFlagged = headPanel.add("statictext", undefined,
-            Msg("UI::Report::Flagged", "These layers have been given a Red label in their compositions."),
-            {multiline: true});
-        txtFlagged.preferredSize = [640, 16];
-    }
+    // Offered here rather than in the import settings: by this point the user can see
+    // exactly which layers it would mark. Off by default -- the label it overwrites
+    // carries the TVPaint group colour.
+    var chkFlag = headPanel.add("checkbox", undefined,
+        Msg("UI::Report::Flagged", "Give these layers a Red label in their compositions"));
+    chkFlag.value = LoadBoolSetting("FlagWarnings", false);
+    chkFlag.onClick = function() {
+        SaveSetting("FlagWarnings", chkFlag.value);
+        ApplyRedFlags( chkFlag.value );
+    };
 
     // --- Summary grouped by blending mode ---
     win.add("statictext", undefined, Msg("UI::Report::GroupTitle", "Summary by blending mode:"));
@@ -2190,11 +2210,8 @@ function ShowWarningReport( iSettings ) {
                     applied = false;
                 }
                 if( applied ) {
-                    // The layer is no longer an unresolved warning, so drop the red flag.
-                    if( flagged && warning.originalLabel !== undefined ) {
-                        try { warning.layerRef.label = warning.originalLabel; } catch(eLabel) {}
-                    }
-                    warning.applied = choice.label;
+                    warning.applied  = choice.label;
+                    warning.resolved = true;
                     changed++;
                 } else {
                     failed++;
@@ -2204,6 +2221,8 @@ function ShowWarningReport( iSettings ) {
             app.endUndoGroup();
         }
 
+        // A resolved layer is no longer flagged, so refresh the labels either way.
+        ApplyRedFlags( chkFlag.value );
         RefreshDetail();
         RefreshSummary();
 
@@ -2233,6 +2252,10 @@ function ShowWarningReport( iSettings ) {
 
     btnSaveLog.onClick = function() { SaveWarningLog( iSettings ); };
     btnClose.onClick   = function() { win.close(); };
+
+    if( chkFlag.value ) {
+        ApplyRedFlags( true );
+    }
 
     win.center();
     win.show();
@@ -2328,19 +2351,25 @@ function ExecuteImport(jsonFiles, settings) {
     progressWindow.show();
     progressWindow.update();
 
-    for (var s = 0; s < totalShots; s++) {
-        var dataFile = jsonFiles[s];
-        if (!dataFile.exists) continue;
+    // try/finally so a shot that throws cannot leave the progress palette on screen.
+    // It is created with closeButton:false, so a stranded one cannot be dismissed by
+    // hand and looks like After Effects has hung.
+    try {
+        for (var s = 0; s < totalShots; s++) {
+            var dataFile = jsonFiles[s];
+            if (!dataFile.exists) continue;
 
-        ImportSingleTVPJson(dataFile, settings, s, totalShots);
+            ImportSingleTVPJson(dataFile, settings, s, totalShots);
+        }
+
+        progressBar.value = 100;
+        progressState.text = "100%";
+        progressStage.text = pbarMessage[lang]["UI::Label::Stage::Success"];
+        progressWindow.update();
+        $.sleep(500);
+    } finally {
+        progressWindow.close();
     }
-
-    progressBar.value = 100;
-    progressState.text = "100%";
-    progressStage.text = pbarMessage[lang]["UI::Label::Stage::Success"];
-    progressWindow.update();
-    $.sleep(500);
-    progressWindow.close();
 
     if( importWarnings.length > 0 ) {
         ShowWarningReport( settings );
