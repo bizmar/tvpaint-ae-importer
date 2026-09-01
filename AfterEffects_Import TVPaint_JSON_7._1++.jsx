@@ -368,6 +368,9 @@ message_fr["UI::Browser::DeselectAll"] 		= "Tout désélectionner";
 message_fr["UI::Browser::DirectFile"] 		= "Fichier JSON direct...";
 message_fr["UI::Browser::Cancel"] 			= "Annuler";
 message_fr["UI::Browser::ImportBtn"] 		= "Importer les plans sélectionnés";
+message_fr["UI::Label::Reporting"] 			= "Signalement des problèmes :";
+message_fr["UI::Label::Reporting::Summary"] 	= "Résumé à la fin de l'import";
+message_fr["UI::Label::Reporting::Each"] 	= "Alerte à chaque problème (interrompt le lot)";
 message_fr["UI::Browser::ColShot"] 			= "Dossier du Plan";
 message_fr["UI::Browser::ColDate"] 			= "Date de modification";
 message_fr["UI::Browser::ColStatus"] 		= "Statut JSON";
@@ -449,6 +452,9 @@ message_en["UI::Browser::DeselectAll"] 		= "Deselect All";
 message_en["UI::Browser::DirectFile"] 		= "Browse Single JSON...";
 message_en["UI::Browser::Cancel"] 			= "Cancel";
 message_en["UI::Browser::ImportBtn"] 		= "Import Selected Shots";
+message_en["UI::Label::Reporting"] 			= "Problem Reporting:";
+message_en["UI::Label::Reporting::Summary"] 	= "Summary when the import finishes";
+message_en["UI::Label::Reporting::Each"] 	= "Alert on each problem (pauses the batch)";
 message_en["UI::Browser::ColShot"] 			= "Shot Folder";
 message_en["UI::Browser::ColDate"] 			= "Date Modified";
 message_en["UI::Browser::ColStatus"] 		= "JSON Status";
@@ -530,6 +536,9 @@ message_ja["UI::Browser::DeselectAll"] 		= "選択解除";
 message_ja["UI::Browser::DirectFile"] 		= "単一JSON参照...";
 message_ja["UI::Browser::Cancel"] 			= "キャンセル";
 message_ja["UI::Browser::ImportBtn"] 		= "選択したショットを読み込む";
+message_ja["UI::Label::Reporting"] 			= "問題の通知:";
+message_ja["UI::Label::Reporting::Summary"] 	= "読み込み完了後にまとめて表示";
+message_ja["UI::Label::Reporting::Each"] 	= "問題ごとに警告（一括処理が中断されます）";
 message_ja["UI::Browser::ColShot"] 			= "ショットフォルダー";
 message_ja["UI::Browser::ColDate"] 			= "更新日時";
 message_ja["UI::Browser::ColStatus"] 		= "JSON 状態";
@@ -611,6 +620,9 @@ message_zh["UI::Browser::DeselectAll"] 		= "取消全选";
 message_zh["UI::Browser::DirectFile"] 		= "单个 JSON 文件...";
 message_zh["UI::Browser::Cancel"] 			= "取消";
 message_zh["UI::Browser::ImportBtn"] 		= "导入所选镜头";
+message_zh["UI::Label::Reporting"] 			= "问题报告:";
+message_zh["UI::Label::Reporting::Summary"] 	= "导入完成后显示汇总";
+message_zh["UI::Label::Reporting::Each"] 	= "每个问题都提示（会中断批量导入）";
 message_zh["UI::Browser::ColShot"] 			= "镜头文件夹";
 message_zh["UI::Browser::ColDate"] 			= "修改日期";
 message_zh["UI::Browser::ColStatus"] 		= "JSON 状态";
@@ -905,6 +917,13 @@ function AddFileFailure( iShot, iComp, iLayer, iMissingCount, iTotalCount, iFirs
         compLabel:      ( iCompRef   ? iCompRef.label   : undefined ),
         folderLabel:    ( iFolderRef ? iFolderRef.label : undefined )
     });
+}
+
+// The report and the old per-problem alerts differ only in WHEN the user is told.
+// What happens to the shot is deliberately not configurable: the recovery behaviour
+// below runs in both modes, so choosing alerts cannot bring back a half-built comp.
+function AnnounceProblem( iAlertEach, iMessage ) {
+    if( iAlertEach ) alert( iMessage );
 }
 
 function AddImportWarning( iShot, iComp, iLayer, iRequestedMode, iAppliedMode, iLayerRef, iOriginalLabel ) {
@@ -1279,7 +1298,7 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // GUI Panel
-var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:400});
+var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:465});
 var staticTextInfo 				= importPanel.add( "statictext", 	{x:25,  y:10,  width:400, height:25}, 	message[lang]["UI::Label::Info"]			);
 var buttonBrowse 				= importPanel.add( "button", 		{x:25,  y:45,  width:400, height:26}, 	message[lang]["UI::Label::Browse"]			);
 var staticTextSettingsTitle 	= importPanel.add( "statictext", 	{x:25,  y:80,  width:200, height:20}, 	message[lang]["UI::Label::Settings"]		);
@@ -1298,6 +1317,12 @@ var staticTextSeqSorting 		= importPanel.add( "statictext", 	{x:25, y:315, width
 var ddListArraySeqSorting 		= new Array( 	message[lang]["UI::Label::Sequence::Index"], 
 												message[lang]["UI::Label::Sequence::Name"] );
 var dropdownlistSeqSorting 		= importPanel.add( "dropdownlist", 	{x:25, y:345, width:300, height:20}, 	ddListArraySeqSorting );
+
+// Appended below the existing controls so nothing above shifts. Radios rather than a
+// checkbox: both modes are then named, instead of one being an unlabelled default.
+var staticTextReporting 		= importPanel.add( "statictext", 	{x:25, y:385, width:400, height:20}, 	message[lang]["UI::Label::Reporting"] 			);
+var radioReportSummary 			= importPanel.add( "radiobutton", 	{x:25, y:410, width:400, height:20}, 	message[lang]["UI::Label::Reporting::Summary"] 	);
+var radioReportEach 			= importPanel.add( "radiobutton", 	{x:25, y:432, width:400, height:20}, 	message[lang]["UI::Label::Reporting::Each"] 	);
 
 // Restore persisted settings with Native Sequence (1) as default
 var savedSeqImportMode 			= LoadIntSetting("SeqImportMode", 1);
@@ -1321,6 +1346,11 @@ checkboxPrePostBehaviours.value = LoadBoolSetting("PrePostBehaviours", true);
 checkboxTimeRemap.value 		= LoadBoolSetting("TimeRemap", true);
 checkboxBlendingModes.value 	= LoadBoolSetting("BlendingModes", true);
 
+// Summary is the default: it is the mode that lets a batch run unattended.
+var savedAlertEach 				= LoadBoolSetting("AlertOnEachProblem", false);
+radioReportEach.value 			= savedAlertEach;
+radioReportSummary.value 		= !savedAlertEach;
+
 radioCameraKeys.enabled 		= checkboxImportCamera.value; 
 radioCameraRaw.enabled 			= checkboxImportCamera.value;
 checkboxPrePostBehaviours.enabled = checkboxTimeRemap.value;
@@ -1338,6 +1368,7 @@ function SaveAllSettings() {
     SaveSetting("PrePostBehaviours", checkboxPrePostBehaviours.value);
     SaveSetting("TimeRemap", checkboxTimeRemap.value);
     SaveSetting("BlendingModes", checkboxBlendingModes.value);
+    SaveSetting("AlertOnEachProblem", radioReportEach.value);
 }
 
 function GetCurrentSettings() {
@@ -1352,7 +1383,8 @@ function GetCurrentSettings() {
         sortingMode: dropdownlistSeqSorting.selection ? dropdownlistSeqSorting.selection.index : 0,
         blending: checkboxBlendingModes.value,
         timing: checkboxTimeRemap.value,
-        seqOn: dropdownlistSeqImport.selection ? dropdownlistSeqImport.selection.index : 1
+        seqOn: dropdownlistSeqImport.selection ? dropdownlistSeqImport.selection.index : 1,
+        alertEach: radioReportEach.value
     };
 }
 
@@ -1508,6 +1540,7 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 	var blendingOn 	= settings.blending;
 	var timeRemapOn = settings.timing;
 	var sequenceOn 	= settings.seqOn;
+	var alertEachOn	= ( settings.alertEach === true );
 
 	var prefix = (totalShots > 1) ? ("[" + (shotIndex + 1) + "/" + totalShots + "] ") : "";
 
@@ -1593,6 +1626,8 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 						Msg( "UI::Report::NoLayers", "No layer data in the .json file" ),
 						root_composition,
 						rootFolder );
+		AnnounceProblem( alertEachOn, Msg( "Error::MissingData", "Data missing from file:" )
+									  + endl + dataFileName );
 		return;
 	}
 
@@ -1659,6 +1694,9 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 							Msg( "UI::Report::NoFrames", "No frame list for this layer" ),
 							root_composition,
 							rootFolder );
+			AnnounceProblem( alertEachOn, Msg( "Error::MissingData", "Data missing from file:" )
+										  + endl + dataFileName + " / "
+										  + ReadStringFromData( currentLayerData, "name", "Undefined" ) );
 			try { currentLayerFolder.remove(); } catch(eF) {}
 			try { layer_composition.remove(); } catch(eC) {}
 			continue;
@@ -1706,6 +1744,11 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 							firstMissing,
 							root_composition,
 							rootFolder );
+			// Error::MissingFiles was defined in all four languages by the original
+			// authors and never wired up. This is the check they intended it for.
+			AnnounceProblem( alertEachOn, Msg( "Error::MissingFiles", "Files are missing from project location." )
+										  + endl + ReadStringFromData( currentLayerData, "name", "Undefined" )
+										  + " (" + missingCount + "/" + filesArray.length + ")" );
 			continue;
 		}
 
@@ -1822,6 +1865,8 @@ function ImportSingleTVPJson(dataFile, settings, shotIndex, totalShots) {
 										Msg( "Blending::Normal", "Normal" ),
 										layer,
 										layer.label );
+					AnnounceProblem( alertEachOn, Msg( "Error::BadBlendingMode", "Blending mode conversion not supported" )
+												  + ": " + currentBlendingMode );
 				}
 			}
 		}
@@ -2611,7 +2656,10 @@ function ExecuteImport(jsonFiles, settings) {
         progressWindow.close();
     }
 
-    if( importWarnings.length > 0 || importFileFailures.length > 0 ) {
+    // In alert mode every problem has already been raised where it happened, so the
+    // end-of-run report would only repeat them.
+    if( settings.alertEach !== true
+        && ( importWarnings.length > 0 || importFileFailures.length > 0 ) ) {
         ShowWarningReport( settings );
     }
 }
@@ -2647,7 +2695,9 @@ $.global.ImportTVPaintJSON = function(fileOrPath, customSettings) {
         sortingMode: 0,
         blending: true,
         timing: true,
-        seqOn: 1
+        seqOn: 1,
+        // Automation is never interrupted by a dialog, regardless of the panel setting.
+        alertEach: false
     };
     
     var finalSettings = customSettings || defaultSettings;
