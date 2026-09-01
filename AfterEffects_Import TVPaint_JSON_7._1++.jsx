@@ -1108,7 +1108,6 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
     actionGroup.alignment = ["right", "center"];
     actionGroup.spacing = 8;
     
-    var btnDirectFile = actionGroup.add("button", undefined, message[lang]["UI::Browser::DirectFile"] || "Browse Single JSON...");
     var btnCancel = actionGroup.add("button", undefined, message[lang]["UI::Browser::Cancel"] || "Cancel");
     var btnImport = actionGroup.add("button", undefined, (message[lang]["UI::Browser::ImportBtn"] || "Import Selected") + " (0)");
     btnImport.preferredSize = [180, 28];
@@ -1253,18 +1252,6 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
         win.close();
     };
 
-    btnDirectFile.onClick = function() {
-        var dataFile = File.openDialog( message[lang]["FileBrowser::Info"], "JSON Files:*.json", false );
-        if (!dataFile) return;
-        if (!FileExists(dataFile)) return;
-        
-        SaveSetting("LastFolder", dataFile.parent.fsName);
-        win.close();
-        importPanel.close();
-        $.sleep(50);
-        ExecuteImport([dataFile], settings);
-    };
-
     btnImport.onClick = function() {
         var sel = shotListBox.selection;
         if (!sel) return;
@@ -1298,31 +1285,32 @@ function OpenShotBrowserDialog(initialBaseFolder, settings) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // GUI Panel
-var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:465});
+var importPanel = new Window("palette", message[lang]["UI::Title"], {x:0, y:0, width:450, height:495});
 var staticTextInfo 				= importPanel.add( "statictext", 	{x:25,  y:10,  width:400, height:25}, 	message[lang]["UI::Label::Info"]			);
 var buttonBrowse 				= importPanel.add( "button", 		{x:25,  y:45,  width:400, height:26}, 	message[lang]["UI::Label::Browse"]			);
-var staticTextSettingsTitle 	= importPanel.add( "statictext", 	{x:25,  y:80,  width:200, height:20}, 	message[lang]["UI::Label::Settings"]		);
-var checkboxImportCamera 		= importPanel.add( "checkbox", 		{x:25,  y:115, width:200, height:20}, 	message[lang]["UI::Camera::Import"] 		);
-var radioCameraKeys 			= importPanel.add( "radiobutton", 	{x:250, y:115, width:200, height:20}, 	message[lang]["UI::Camera::Key"] 			);
-var radioCameraRaw 				= importPanel.add( "radiobutton", 	{x:250, y:135, width:200, height:20}, 	message[lang]["UI::Camera::Raw"] 			);
-var checkboxLayerColors 		= importPanel.add( "checkbox", 		{x:25,  y:175, width:200, height:20},	message[lang]["UI::Label::LayerColors"] 	);
-var checkboxTimeRemap		 	= importPanel.add( "checkbox", 		{x:250, y:175, width:200, height:20}, 	message[lang]["UI::Label::TimeRemap"] 		);
-var checkboxBlendingModes 		= importPanel.add( "checkbox", 		{x:25,  y:210, width:200, height:20}, 	message[lang]["UI::Label::BlendingMode"]	);
-var checkboxPrePostBehaviours 	= importPanel.add( "checkbox", 		{x:250, y:210, width:200, height:20}, 	message[lang]["UI::Label::PrePostB"] 		);
-var staticTextSeqImport 		= importPanel.add( "statictext", 	{x:25,  y:250, width:200, height:20}, 	message[lang]["UI::Label::Sequence2"] 		);
+var buttonSingleJSON 			= importPanel.add( "button", 		{x:25,  y:75,  width:400, height:26}, 	message[lang]["UI::Browser::DirectFile"]	);
+var staticTextSettingsTitle 	= importPanel.add( "statictext", 	{x:25,  y:110,  width:200, height:20}, 	message[lang]["UI::Label::Settings"]		);
+var checkboxImportCamera 		= importPanel.add( "checkbox", 		{x:25,  y:145, width:200, height:20}, 	message[lang]["UI::Camera::Import"] 		);
+var radioCameraKeys 			= importPanel.add( "radiobutton", 	{x:250, y:145, width:200, height:20}, 	message[lang]["UI::Camera::Key"] 			);
+var radioCameraRaw 				= importPanel.add( "radiobutton", 	{x:250, y:165, width:200, height:20}, 	message[lang]["UI::Camera::Raw"] 			);
+var checkboxLayerColors 		= importPanel.add( "checkbox", 		{x:25,  y:205, width:200, height:20},	message[lang]["UI::Label::LayerColors"] 	);
+var checkboxTimeRemap		 	= importPanel.add( "checkbox", 		{x:250, y:205, width:200, height:20}, 	message[lang]["UI::Label::TimeRemap"] 		);
+var checkboxBlendingModes 		= importPanel.add( "checkbox", 		{x:25,  y:240, width:200, height:20}, 	message[lang]["UI::Label::BlendingMode"]	);
+var checkboxPrePostBehaviours 	= importPanel.add( "checkbox", 		{x:250, y:240, width:200, height:20}, 	message[lang]["UI::Label::PrePostB"] 		);
+var staticTextSeqImport 		= importPanel.add( "statictext", 	{x:25,  y:280, width:200, height:20}, 	message[lang]["UI::Label::Sequence2"] 		);
 var ddListArraySeqImport 		= new Array( 	message[lang]["UI::Label::Sequence2::Rebuilt"], 
 												message[lang]["UI::Label::Sequence2::Native"] );
-var dropdownlistSeqImport 		= importPanel.add( "dropdownlist", 	{x:25, y:280, width:300, height:20}, 	ddListArraySeqImport );
-var staticTextSeqSorting 		= importPanel.add( "statictext", 	{x:25, y:315, width:350, height:20}, 	message[lang]["UI::Label::Sequence"] 		);
+var dropdownlistSeqImport 		= importPanel.add( "dropdownlist", 	{x:25, y:310, width:300, height:20}, 	ddListArraySeqImport );
+var staticTextSeqSorting 		= importPanel.add( "statictext", 	{x:25, y:345, width:350, height:20}, 	message[lang]["UI::Label::Sequence"] 		);
 var ddListArraySeqSorting 		= new Array( 	message[lang]["UI::Label::Sequence::Index"], 
 												message[lang]["UI::Label::Sequence::Name"] );
-var dropdownlistSeqSorting 		= importPanel.add( "dropdownlist", 	{x:25, y:345, width:300, height:20}, 	ddListArraySeqSorting );
+var dropdownlistSeqSorting 		= importPanel.add( "dropdownlist", 	{x:25, y:375, width:300, height:20}, 	ddListArraySeqSorting );
 
 // Appended below the existing controls so nothing above shifts. Radios rather than a
 // checkbox: both modes are then named, instead of one being an unlabelled default.
-var staticTextReporting 		= importPanel.add( "statictext", 	{x:25, y:385, width:400, height:20}, 	message[lang]["UI::Label::Reporting"] 			);
-var radioReportSummary 			= importPanel.add( "radiobutton", 	{x:25, y:410, width:400, height:20}, 	message[lang]["UI::Label::Reporting::Summary"] 	);
-var radioReportEach 			= importPanel.add( "radiobutton", 	{x:25, y:432, width:400, height:20}, 	message[lang]["UI::Label::Reporting::Each"] 	);
+var staticTextReporting 		= importPanel.add( "statictext", 	{x:25, y:415, width:400, height:20}, 	message[lang]["UI::Label::Reporting"] 			);
+var radioReportSummary 			= importPanel.add( "radiobutton", 	{x:25, y:440, width:400, height:20}, 	message[lang]["UI::Label::Reporting::Summary"] 	);
+var radioReportEach 			= importPanel.add( "radiobutton", 	{x:25, y:462, width:400, height:20}, 	message[lang]["UI::Label::Reporting::Each"] 	);
 
 // Restore persisted settings with Native Sequence (1) as default
 var savedSeqImportMode 			= LoadIntSetting("SeqImportMode", 1);
@@ -1420,6 +1408,21 @@ buttonBrowse.onClick = function() {
     var settings = GetCurrentSettings();
     
     OpenShotBrowserDialog(initialFolder, settings);
+};
+
+// Straight to the file picker. Importing shots one at a time is common enough that
+// routing it through the browser was a wasted click each time.
+buttonSingleJSON.onClick = function() {
+    SaveAllSettings();
+    var dataFile = File.openDialog( message[lang]["FileBrowser::Info"], "JSON Files:*.json", false );
+    if (!dataFile) return;
+    if (!FileExists(dataFile)) return;
+
+    var settings = GetCurrentSettings();
+    SaveSetting("LastFolder", dataFile.parent.fsName);
+    importPanel.close();
+    $.sleep(50);
+    ExecuteImport([dataFile], settings);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////

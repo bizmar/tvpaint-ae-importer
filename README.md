@@ -18,11 +18,13 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 ### Batch importing
 - **Interactive Shot Browser** — browse shot folders with Date Modified, filter by name, multi-select with `Shift`/`Ctrl`.
 - **Multi-shot import** — finds the matching `.json` in each selected folder and imports them in sequence, with progress.
+- **Single-shot import** — a file picker on the main panel, straight to one `.json` without the browser.
 - **Automatic comp naming** — `Clip_<shotName>`.
 - **Settings persistence** — UI options and root folder are remembered between sessions.
 
 ### Import Report
 - **No modal interruptions** — problems are collected during the run and shown once at the end, so a large batch can be left alone.
+- **Two reporting modes** — one summary when the import finishes, or an alert on each problem.
 - **Failed imports first** — layers whose frames are missing are skipped, listed, and flagged; the rest of the batch still imports.
 - **Fix blending modes in place** — select layers, pick a mode, apply. Clicking a summary row selects every layer using that mode.
 - **Red labels** — failed shots' comps and folders (on by default); unresolved layers (off by default).
@@ -62,7 +64,7 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 
 ## Screenshots
 
-**Shot Browser** — pick one or many shots to import.
+**Shot Browser** — pick one or many shots to import. The main panel also has a direct picker for a single `.json`.
 
 <img src="docs/MultiShotSelectExample.png" width="620" alt="TVPaint Shot Browser" />
 
