@@ -377,14 +377,14 @@ message_fr["UI::Browser::ColStatus"] 		= "Statut JSON";
 // --- Import Warning Report ---
 message_fr["UI::Report::Title"] 			= "Rapport d'import";
 message_fr["UI::Report::Headline"] 			= "%1 calque(s) dans %2 plan(s) utilisent des modes de fusion qu'After Effects ne peut pas reproduire.";
-message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont été réglés sur Normal -- vérifiez-les avant validation.";
+message_fr["UI::Report::Intro"] 			= "L'import s'est terminé. Ces calques ont été réglés sur Normal ; vérifiez-les avant validation.";
 message_fr["UI::Report::Flagged"] 			= "Etiqueter en Rouge les calques non resolus (encore sur Normal)";
 message_fr["UI::Report::FlaggedFiles"] 		= "Etiqueter en Rouge les compositions et dossiers de ces plans";
-message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint -- Signaler les calques concernes";
+message_fr["UI::Report::FlagUndo"] 			= "Import TVPaint : Signaler les calques concernes";
 message_fr["UI::Report::FilesHeadline"] 	= "%1 calque(s) dans %2 plan(s) n'ont pas pu etre importes :";
 message_fr["UI::Report::ColMissing"] 		= "Probleme";
-message_fr["UI::Report::FilesTitle"] 		= "IMPORTS ECHOUES -- ces calques ne sont pas dans le projet";
-message_fr["UI::Report::FilesAlert"] 		= "!  %1 calque(s) dans %2 plan(s) n'ont PAS ete importes. Ces plans devront etre reimportes.";
+message_fr["UI::Report::FilesTitle"] 		= "Imports échoués";
+message_fr["UI::Report::FilesAlert"] 		= "%1 calque(s) dans %2 plan(s) n'ont pas été importés. Ces plans devront être réimportés.";
 message_fr["UI::Report::NoLayers"] 			= "Aucune donnee de calque dans le fichier .json";
 message_fr["UI::Report::NoFrames"] 			= "Aucune liste d'images pour ce calque";
 message_fr["UI::Report::GroupTitle"] 		= "Récapitulatif par mode de fusion :";
@@ -409,7 +409,7 @@ message_fr["UI::Report::ApplyBtn"] 			= "Appliquer a la selection";
 message_fr["UI::Report::FixDone"] 			= "%1 calque(s) regle(s) sur %2.";
 message_fr["UI::Report::FixNone"] 			= "Selectionnez d'abord une ou plusieurs lignes.";
 message_fr["UI::Report::FixFailed"] 		= "%1 calque(s) n'ont pas pu etre modifies -- l'import a peut-etre ete annule.";
-message_fr["UI::Report::UndoName"] 			= "Import TVPaint -- Modifier les modes de fusion";
+message_fr["UI::Report::UndoName"] 			= "Import TVPaint : Modifier les modes de fusion";
 
 var message_en = [];
 message_en["Error::Interruption"] 			= "Exit Script.";
@@ -461,14 +461,14 @@ message_en["UI::Browser::ColStatus"] 		= "JSON Status";
 // --- Import Warning Report ---
 message_en["UI::Report::Title"] 			= "Import Report";
 message_en["UI::Report::Headline"] 			= "%1 layer(s) across %2 shot(s) use blending modes that After Effects cannot reproduce.";
-message_en["UI::Report::Intro"] 			= "The import completed. These layers were set to Normal -- review them before validation.";
+message_en["UI::Report::Intro"] 			= "The import completed. These layers were set to Normal; review them before validation.";
 message_en["UI::Report::Flagged"] 			= "Label unresolved layers Red (still set to Normal)";
 message_en["UI::Report::FlaggedFiles"] 		= "Label these shots' compositions and folders Red";
-message_en["UI::Report::FlagUndo"] 			= "TVPaint Import -- Flag Affected Layers";
+message_en["UI::Report::FlagUndo"] 			= "TVPaint Import: Flag Affected Layers";
 message_en["UI::Report::FilesHeadline"] 	= "%1 layer(s) in %2 shot(s) could not be imported:";
 message_en["UI::Report::ColMissing"] 		= "Problem";
-message_en["UI::Report::FilesTitle"] 		= "FAILED IMPORTS -- these layers are not in the project";
-message_en["UI::Report::FilesAlert"] 		= "!  %1 layer(s) in %2 shot(s) did NOT import. Those shots will need re-importing.";
+message_en["UI::Report::FilesTitle"] 		= "Failed imports";
+message_en["UI::Report::FilesAlert"] 		= "%1 layer(s) in %2 shot(s) did not import. Those shots will need re-importing.";
 message_en["UI::Report::NoLayers"] 			= "No layer data in the .json file";
 message_en["UI::Report::NoFrames"] 			= "No frame list for this layer";
 message_en["UI::Report::GroupTitle"] 		= "Summary by blending mode:";
@@ -493,7 +493,7 @@ message_en["UI::Report::ApplyBtn"] 			= "Apply to Selected";
 message_en["UI::Report::FixDone"] 			= "%1 layer(s) set to %2.";
 message_en["UI::Report::FixNone"] 			= "Select one or more rows first.";
 message_en["UI::Report::FixFailed"] 		= "%1 layer(s) could not be changed -- the import may have been undone.";
-message_en["UI::Report::UndoName"] 			= "TVPaint Import -- Change Blending Modes";
+message_en["UI::Report::UndoName"] 			= "TVPaint Import: Change Blending Modes";
 
 var message_ja = [];
 message_ja["Error::Interruption"] 			= "スクリプトを中止する。";
@@ -548,11 +548,11 @@ message_ja["UI::Report::Headline"] 			= "%2 個のショット内の %1 個の�
 message_ja["UI::Report::Intro"] 			= "読み込みは完了しました。これらのレイヤーは「通常」に設定されていますので、確認してください。";
 message_ja["UI::Report::Flagged"] 			= "未解決のレイヤー (通常のまま) に赤のラベルを付ける";
 message_ja["UI::Report::FlaggedFiles"] 		= "これらのショットのコンポジションとフォルダーに赤のラベルを付ける";
-message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み -- 対象レイヤーにラベルを付ける";
+message_ja["UI::Report::FlagUndo"] 			= "TVPaint 読み込み: 対象レイヤーにラベルを付ける";
 message_ja["UI::Report::FilesHeadline"] 	= "%2 個のショット内の %1 個のレイヤーを読み込めませんでした:";
 message_ja["UI::Report::ColMissing"] 		= "問題";
-message_ja["UI::Report::FilesTitle"] 		= "読み込み失敗 -- これらのレイヤーはプロジェクトにありません";
-message_ja["UI::Report::FilesAlert"] 		= "!  %2 個のショット内の %1 個のレイヤーが読み込まれませんでした。これらのショットは再読み込みが必要です。";
+message_ja["UI::Report::FilesTitle"] 		= "読み込み失敗";
+message_ja["UI::Report::FilesAlert"] 		= "%2 個のショット内の %1 個のレイヤーが読み込まれませんでした。これらのショットは再読み込みが必要です。";
 message_ja["UI::Report::NoLayers"] 			= ".json ファイルにレイヤーデータがありません";
 message_ja["UI::Report::NoFrames"] 			= "このレイヤーには画像リストがありません";
 message_ja["UI::Report::GroupTitle"] 		= "描画モード別の集計:";
@@ -577,7 +577,7 @@ message_ja["UI::Report::ApplyBtn"] 			= "選択項目に適用";
 message_ja["UI::Report::FixDone"] 			= "%1 個のレイヤーを「%2」に設定しました。";
 message_ja["UI::Report::FixNone"] 			= "先に行を選択してください。";
 message_ja["UI::Report::FixFailed"] 		= "%1 個のレイヤーを変更できませんでした。読み込みが取り消された可能性があります。";
-message_ja["UI::Report::UndoName"] 			= "TVPaint 読み込み -- 描画モードの変更";
+message_ja["UI::Report::UndoName"] 			= "TVPaint 読み込み: 描画モードの変更";
 
 var message_zh = [];
 message_zh["Error::Interruption"] 			= "退出脚本";
@@ -632,11 +632,11 @@ message_zh["UI::Report::Headline"] 			= "%2 个镜头中的 %1 个图层使用�
 message_zh["UI::Report::Intro"] 			= "导入已完成。这些图层已设置为“正常”，请在交付前检查。";
 message_zh["UI::Report::Flagged"] 			= "将未解决的图层 (仍为正常) 标为红色";
 message_zh["UI::Report::FlaggedFiles"] 		= "将这些镜头的合成和文件夹标为红色";
-message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入 -- 标记受影响的图层";
+message_zh["UI::Report::FlagUndo"] 			= "TVPaint 导入: 标记受影响的图层";
 message_zh["UI::Report::FilesHeadline"] 	= "%2 个镜头中的 %1 个图层无法导入:";
 message_zh["UI::Report::ColMissing"] 		= "问题";
-message_zh["UI::Report::FilesTitle"] 		= "导入失败 -- 这些图层不在项目中";
-message_zh["UI::Report::FilesAlert"] 		= "!  %2 个镜头中的 %1 个图层未能导入。这些镜头需要重新导入。";
+message_zh["UI::Report::FilesTitle"] 		= "导入失败";
+message_zh["UI::Report::FilesAlert"] 		= "%2 个镜头中的 %1 个图层未能导入。这些镜头需要重新导入。";
 message_zh["UI::Report::NoLayers"] 			= ".json 文件中没有图层数据";
 message_zh["UI::Report::NoFrames"] 			= "此图层没有帧列表";
 message_zh["UI::Report::GroupTitle"] 		= "按混合模式汇总:";
@@ -661,7 +661,7 @@ message_zh["UI::Report::ApplyBtn"] 			= "应用到所选";
 message_zh["UI::Report::FixDone"] 			= "已将 %1 个图层设为 %2。";
 message_zh["UI::Report::FixNone"] 			= "请先选择一行或多行。";
 message_zh["UI::Report::FixFailed"] 		= "%1 个图层无法更改 -- 导入可能已被撤销。";
-message_zh["UI::Report::UndoName"] 			= "TVPaint 导入 -- 更改混合模式";
+message_zh["UI::Report::UndoName"] 			= "TVPaint 导入: 更改混合模式";
 
 // Fill Languages in message Table
 var message = [];
@@ -2223,7 +2223,7 @@ function ShowWarningReport( iSettings ) {
         }
     }
 
-    var win = new Window("dialog", Msg("UI::Report::Title", "Import Report") + " -- v." + scriptVersion_XX,
+    var win = new Window("dialog", Msg("UI::Report::Title", "Import Report") + " (v" + scriptVersion_XX + ")",
                          undefined, {resizeable: true});
     win.orientation = "column";
     win.alignChildren = ["fill", "top"];
@@ -2499,12 +2499,12 @@ function ShowWarningReport( iSettings ) {
     actionGroup.orientation = "row";
     actionGroup.alignChildren = ["left", "center"];
     var btnSaveLog = actionGroup.add("button", undefined, Msg("UI::Report::SaveLog", "Save Log..."));
-    btnSaveLog.preferredSize = [160, 26];
+    btnSaveLog.preferredSize = [120, 24];
     btnSaveLog.alignment = ["left", "center"];
     var spacer = actionGroup.add("group");
     spacer.alignment = ["fill", "fill"];
     var btnClose = actionGroup.add("button", undefined, Msg("UI::Report::Close", "Close"), {name:"ok"});
-    btnClose.preferredSize = [264, 30];	// ~40% of the 660px content width
+    btnClose.preferredSize = [90, 24];	// Adobe's standard dialog button footprint
     btnClose.alignment = ["right", "center"];
 
     btnSaveLog.onClick = function() { SaveWarningLog( iSettings ); };
