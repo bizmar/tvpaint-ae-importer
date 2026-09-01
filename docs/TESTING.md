@@ -325,6 +325,32 @@ Verified on macOS with shot 0200 through `ExecuteImport`:
   before it can fail, so a machine with script file writing disabled gets a 0-byte
   file at the chosen path and an alert saying nothing was written.
 
+## Windows regression pass on the macOS changes
+
+Run 2026-09-01 on After Effects 26.0x67, after applying the four macOS commits.
+
+| Check | Result |
+|---|---|
+| Row height 19 -> 21 | **Pass** — slightly more generous, no clipping, no odd gaps |
+| Panel at 465px with the Problem Reporting section | **Pass** — both radios render with margin to spare |
+| Failure alert wording | **Reads quieter.** See below |
+| Alert mode | **Pass** — importing 1240 raised "Blending mode conversion not supported: Light" mid-run and paused; no report followed |
+
+### The failure alert
+
+`UI::Report::FilesAlert` now reads `3 layer(s) in 1 shot(s) did not import. Those
+shots will need re-importing.` without the leading `!` or the capitalised `NOT`.
+
+On this build `ScriptUI.newFont(..., BOLD, ...)` is ignored while
+`graphics.foregroundColor` works, so colour alone carries the severity. It is the only
+coloured text in the dialog and does register, but it sits as the third line of a
+three-line paragraph at the same size and weight as its neighbours, so the eye does not
+jump to it. The "Failed imports" section immediately below carries the message
+structurally, which offsets this.
+
+Judged acceptable but marginal. Restoring just the leading marker, without the
+capitalised NOT, would give the eye an anchor without shouting.
+
 ## Known gotchas when testing
 
 - A modal ScriptUI dialog blocks the After Effects script engine — close it before
