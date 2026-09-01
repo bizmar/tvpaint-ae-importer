@@ -2106,7 +2106,9 @@ function RowsToPixels( iRows, iMin, iMax, iHasHeader ) {
     var rows = iRows;
     if( rows < iMin ) rows = iMin;
     if( rows > iMax ) rows = iMax;
-    return rows * 19 + ( iHasHeader ? 26 : 8 );
+    // 21, not 19: a ScriptUI listbox row is taller on macOS, and 19 slices the last
+    // row in half there. Two points a row costs Windows nothing visible.
+    return rows * 21 + ( iHasHeader ? 26 : 8 );
 }
 
 function ShowWarningReport( iSettings ) {
