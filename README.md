@@ -64,9 +64,13 @@ Compatible with **TVPaint 11 / TVPaint 12** and **Adobe After Effects (CS5 throu
 
 ## Screenshots
 
-**Shot Browser** — pick one or many shots to import. The main panel also has a direct picker for a single `.json`.
+**Import panel** — settings, and both entry points: the Shot Browser for a batch, or a direct picker for a single `.json`.
 
-<img src="docs/MultiShotSelectExample.png" width="620" alt="TVPaint Shot Browser" />
+<img src="docs/ImportPanelExample.png" width="440" alt="TVPaint++ import panel" />
+
+**Shot Browser** — filter, sort and multi-select the shots to import.
+
+<img src="docs/MultiShotSelectExample.png" width="620" alt="TVPaint++ Shot Browser" />
 
 **Import Report** — shown once when the run finishes.
 
